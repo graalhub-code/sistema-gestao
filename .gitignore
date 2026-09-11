@@ -1,0 +1,21 @@
+# Backups locais
+*_BACKUP.html
+*.bak
+
+# Scripts temporários de build
+/tmp/
+*.tmp.js
+*.tmp.html
+
+# Python
+__pycache__/
+*.pyc
+.env
+
+# macOS
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
