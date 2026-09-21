@@ -765,6 +765,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
       <span style="font-size:11px;color:var(--t3);">Status:</span>
       <span id="apiStatus" style="font-size:11px;font-weight:600;color:#E04030;">○ Offline</span>
+      <button class="btn btn-sm" onclick="syncPlanilha()" title="Sincronizar dados" style="font-size:10px;padding:3px 8px;margin-left:4px;"><i class="ti ti-refresh"></i></button>
       <button class="btn btn-sm" onclick="checkAPI()" style="margin-left:auto;"><i class="ti ti-refresh"></i></button>
     </div>
     <p style="font-size:11px;color:var(--t3);line-height:1.6;margin:0 0 10px;">
@@ -778,6 +779,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
     </div>
     <button class="btn btn-sm" onclick="syncFromAPI()" style="margin-right:6px;"><i class="ti ti-refresh"></i>Sincronizar</button>
     <button class="btn btn-sm" onclick="showD1Count()" style="margin-right:6px;"><i class="ti ti-database"></i>Status D1</button>
+    <button class="btn btn-sm" onclick="syncPlanilha()" style="margin-right:6px;background:rgba(58,153,172,.12);color:#3A99AC;border:1px solid rgba(58,153,172,.25);"><i class="ti ti-arrows-exchange"></i>&nbsp;Sync Planilha</button>
     <button class="btn btn-sm" onclick="doApiLogout()" style="color:var(--t3);"><i class="ti ti-plug-off"></i>Desconectar</button>
   </div>
 </div>
@@ -908,8 +910,14 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 </div>
 
 
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
+
+
 
 
 
@@ -2196,6 +2204,7 @@ async function syncFromAPI() {
       DATA.splice(0, DATA.length, ...pautas.result.map(p=>({...p,_new:false})));
       locaisNovas.forEach(d => { if(!DATA.find(x=>x.id===d.id)) DATA.unshift(d); });
       showToast('✓ '+DATA.length+' pautas carregadas do D1','suc');
+      populaAnos();
     }
     // 2. Custos
     const ano = F && F.ano ? F.ano : new Date().getFullYear();
@@ -2258,6 +2267,7 @@ async function lsSaveAPI(pauta) {
     });
   }
   // Log inicial
+  populaAnos();
   addLog('Sistema','Sistema iniciado — '+DATA.length+' pautas carregadas');
 
   // Clock
@@ -2619,6 +2629,53 @@ async function nfSalvar(idx) {
   document.getElementById('nfModal').style.display = 'none';
   renderDem();
   showToast('NF '+num+' registrada!','suc');
+}
+
+function populaAnos() {
+  const anos = [...new Set(DATA.map(d=>+(d.ano||0)).filter(a=>a>2000))].sort((a,b)=>b-a);
+  ['fAno','rAno','cAno','ncAno','invAno','socAno','calAno'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const cur = el.value || String(new Date().getFullYear());
+    const base = ['fAno','rAno','cAno'].includes(id) ? '<option value="">Todos</option>' : '';
+    el.innerHTML = base + anos.map(a =>
+      `<option value="${a}"${String(a)===cur?'selected':''}>${a}</option>`
+    ).join('');
+  });
+  // Tipos únicos → fDTipo, rTipo
+  const tipos = [...new Set(DATA.map(d=>d.tipo).filter(Boolean))].sort();
+  ['fDTipo','rTipo'].forEach(id=>{
+    const el=document.getElementById(id); if(!el) return;
+    const cur=el.value;
+    el.innerHTML='<option value="">Todos</option>'+tipos.map(t=>`<option value="${t}"${t===cur?'selected':''}>${t}</option>`).join('');
+  });
+  // Status
+  const sts=['Pago','Em aberto','Cancelada','Cancelado','Aprovada','Rascunho'];
+  ['fDSt','rcFilt'].forEach(id=>{
+    const el=document.getElementById(id); if(!el) return;
+    const cur=el.value;
+    el.innerHTML='<option value="">Todos status</option>'+sts.map(s=>`<option value="${s}"${s===cur?'selected':''}>${s}</option>`).join('');
+  });
+  // Clientes → cCli
+  const clis=[...new Set(DATA.map(d=>(d.cli||d.cliente||'')).filter(Boolean))].sort();
+  const cEl=document.getElementById('cCli');
+  if(cEl){const cur=cEl.value; cEl.innerHTML='<option value="">Todos clientes</option>'+clis.map(c=>`<option value="${c}"${c===cur?'selected':''}>${c}</option>`).join('');}
+}
+
+
+async function syncPlanilha() {
+  if (!API_ONLINE) { showToast('Conecte à API primeiro em Configurações','err'); return; }
+  showToast('Sincronizando com D1...','info');
+  const novas = DATA.filter(d => d._new);
+  let inserted = 0;
+  for (const p of novas) {
+    const r = await apiPost('/pautas', p);
+    if (r && r.id) { p.id = r.id; p._new = false; inserted++; }
+  }
+  await syncFromAPI();
+  populaAnos();
+  addLog('Sync','Sync manual: '+inserted+' novas → D1, '+DATA.length+' pautas carregadas');
+  showToast('✓ Sync concluído — D1: '+DATA.length+' pautas','suc');
 }
 
 
