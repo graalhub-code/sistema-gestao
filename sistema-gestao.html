@@ -754,7 +754,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
       <button class="btn btn-sm" onclick="checkAPI()" style="margin-left:auto;"><i class="ti ti-refresh"></i></button>
     </div>
     <p style="font-size:11px;color:var(--t3);line-height:1.6;margin:0 0 10px;">
-      Conecte com seu token para sincronizar dados entre JP e Maysa em tempo real.
+      Conecte com seu token para sincronizar dados entre JP e Maysa em tempo real.<br>O D1 tem <strong id="d1CountLbl">—</strong> pautas. Planilha Google Drive é sincronizada sob demanda.
     </p>
     <div style="display:flex;gap:6px;margin-bottom:8px;">
       <input id="apiTokenInput" type="password" placeholder="Token de acesso (jp2026 / maysa2026)"
@@ -763,6 +763,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
       <button class="btn btn-red" onclick="doApiLogin()"><i class="ti ti-plug"></i>Conectar</button>
     </div>
     <button class="btn btn-sm" onclick="syncFromAPI()" style="margin-right:6px;"><i class="ti ti-refresh"></i>Sincronizar</button>
+    <button class="btn btn-sm" onclick="showD1Count()" style="margin-right:6px;"><i class="ti ti-database"></i>Status D1</button>
     <button class="btn btn-sm" onclick="doApiLogout()" style="color:var(--t3);"><i class="ti ti-plug-off"></i>Desconectar</button>
   </div>
 </div>
@@ -885,8 +886,10 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 
 
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
 
 
 let META_SOCIOS_PCT = 15;
@@ -1081,6 +1084,7 @@ function stMenuProd(idx,btn,e){
     dv.onclick=()=>{
       const old=DATA[idx].stProd||'Em produção';
       DATA[idx].stProd=st;
+      if(API_ONLINE)apiPut('/pautas/'+DATA[idx].id,{stProd:st}).catch(()=>{});
       addLog('Produção',DATA[idx].camp+' — '+old+' → '+st);
       dd.remove();
       if(VIEW==='demandas') renderDem();
@@ -1684,14 +1688,24 @@ function orgSaveDraft(){
   showToast('Rascunho salvo!','info');
 }
 
-function orgVirar(){
+async function orgVirar(){
   if(O.status!=='Aprovado'){showToast('O orçamento precisa estar Aprovado.','err');return;}
   const c=orcCalc(O);
-  const job={id:Date.now(),ano:new Date().getFullYear(),mes:MO[new Date().getMonth()],empresa:O.empresa,cli:O.cli,vei:'GRAAL.hub',camp:O.nome,tipo:'Fee Mensal',bruto:O.bruto,hon:c.com,liqV:c.liq,imp:O.imp,impV:c.imp,rep:0,liq:c.lucro,st:'Em aberto',orcId:O.id};
+  const job={id:Date.now(),ano:new Date().getFullYear(),mes:MO[new Date().getMonth()],
+    empresa:O.empresa,cli:O.cli,vei:'GRAAL.hub',camp:O.nome,tipo:'Fee Mensal',
+    bruto:O.bruto,hon:c.com,liqV:c.liq,imp:O.imp,impV:c.imp,rep:0,liq:c.lucro,
+    st:'Em aberto',st_fin:'Em aberto',orcId:O.id,_new:true};
   DATA.unshift(job);
+  lsSave();
   if(editIdx>=0) OR[editIdx]=O; else OR.unshift(O);
   addLog('Criação','Pauta criada: '+(O.nome||O.cli));orgDirty=false;
-  showToast('Pauta criada!','suc');goTo('demandas');
+  // Gravar no D1
+  if(API_ONLINE){
+    const r=await apiPost('/pautas',job);
+    if(r&&r.id){job.id=r.id;job._new=false;lsSave();}
+  }
+  showToast('Pauta criada'+(API_ONLINE?' e sincronizada':'')+'!','suc');
+  goTo('demandas');
 }
 
 // ── Status de Orçamento ───────────────────────────────────────────────
@@ -2138,28 +2152,41 @@ async function checkAPI() {
 
 async function syncFromAPI() {
   if (!API_TOKEN) return;
-  showToast('Sincronizando dados...', 'info');
-  const pautas = await apiGet('/pautas/all');
-  if (pautas && pautas.result) {
-    pautas.result.forEach(p => {
-      if (!DATA.find(x => x.id === p.id)) DATA.push({...p, _new: false});
-    });
+  showToast('Sincronizando com a nuvem...', 'info');
+  try {
+    // 1. Pautas — D1 é a fonte verdade quando online
+    const pautas = await apiGet('/pautas/all');
+    if (pautas && pautas.result && pautas.result.length > 0) {
+      // Mesclar: manter pautas locais _new que ainda não foram ao D1
+      const locaisNovas = DATA.filter(d => d._new);
+      // Substituir DATA pelo que veio do D1 + locais ainda não sincronizadas
+      DATA.splice(0, DATA.length, ...pautas.result.map(p=>({...p,_new:false})));
+      locaisNovas.forEach(d => { if(!DATA.find(x=>x.id===d.id)) DATA.unshift(d); });
+      showToast('✓ '+DATA.length+' pautas carregadas do D1','suc');
+    }
+    // 2. Custos
+    const ano = F && F.ano ? F.ano : new Date().getFullYear();
+    const custos = await apiGet('/custos?ano='+ano);
+    if (custos && custos.result) {
+      custos.result.forEach(c => {
+        if (!CUSTOS.find(x => x.id === c.id)) CUSTOS.push(c);
+      });
+    }
+    // 3. Logs
+    const logs = await apiGet('/logs');
+    if (logs && logs.result) {
+      LOGS.splice(0, 9999, ...logs.result.map(l => ({
+        item: l.item, acao: l.acao, tipo: l.tipo, ts: l.created_at
+      })));
+    }
+    lsSave();
+    renderDash && renderDash();
+    // Atualizar badge
+    const nb = document.getElementById('demBadge');
+    if(nb) nb.textContent = DATA.length;
+  } catch(err) {
+    showToast('Erro ao sincronizar: '+err.message,'err');
   }
-  const custos = await apiGet('/custos?ano=2026');
-  if (custos && custos.result) {
-    custos.result.forEach(c => {
-      if (!CUSTOS.find(x => x.id === c.id)) CUSTOS.push(c);
-    });
-  }
-  const logs = await apiGet('/logs');
-  if (logs && logs.result) {
-    LOGS.splice(0, 9999, ...logs.result.map(l => ({
-      item: l.item, acao: l.acao, tipo: l.tipo, ts: l.created_at
-    })));
-  }
-  lsSave();
-  renderDash && renderDash();
-  showToast('Dados sincronizados ✓', 'suc');
 }
 
 async function lsSaveAPI(pauta) {
@@ -2434,6 +2461,16 @@ function renderCalendario(){
     </div>`;
   }
   grid.innerHTML=cells;
+}
+
+async function showD1Count() {
+  const r = await apiGet('/status');
+  if (!r) { showToast('API offline','err'); return; }
+  const p = await apiGet('/pautas/all');
+  const total = p && p.result ? p.result.length : '?';
+  const el = document.getElementById('d1CountLbl');
+  if (el) el.textContent = total;
+  showToast('D1: '+total+' pautas | Sistema: '+DATA.length+' pautas', 'info');
 }
 
 </script>
