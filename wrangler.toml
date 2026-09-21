@@ -1,0 +1,8 @@
+name = "graal-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "graal-sistema-gestao"
+database_id = "7d0c8e82-dd31-4b7a-b63c-479ecbe70b45"
