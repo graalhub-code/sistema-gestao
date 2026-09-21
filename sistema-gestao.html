@@ -745,7 +745,28 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
                 <div class="deploy-step"><div class="deploy-num">3</div><div><b>CNAME</b> no Google Workspace: <code>sistema → graal.pages.dev</code><br>Resultado: <code>sistema.graalhub.com</code></div></div>
                 <div class="deploy-step"><div class="deploy-num">4</div><div><b>Cloudflare Access</b> — Login gratuito para joao@graalhub.com e maysa@graalhub.com</div></div>
                 
-              <div class="card" style="margin:12px 0 0;"><div class="ch"><div class="ct"><i class="ti ti-database" style="color:var(--red2);margin-right:6px;"></i>Backup e Restauração</div></div><div class="cb"><p style="font-size:11px;color:var(--t3);line-height:1.6;margin:0 0 10px;">Exporte JSON. Importe para restaurar.</p><div style="display:flex;gap:8px;"><button class="btn btn-red" onclick="exportData()"><i class="ti ti-download"></i>Exportar</button><button class="btn" onclick="importData()"><i class="ti ti-upload"></i>Importar</button></div></div></div></div>
+              <div class="card" style="margin:12px 0 0;">
+  <div class="ch"><div class="ct"><i class="ti ti-cloud" style="color:#3A99AC;margin-right:6px;"></i>Conexão em Nuvem</div></div>
+  <div class="cb">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <span style="font-size:11px;color:var(--t3);">Status:</span>
+      <span id="apiStatus" style="font-size:11px;font-weight:600;color:#E04030;">○ Offline</span>
+      <button class="btn btn-sm" onclick="checkAPI()" style="margin-left:auto;"><i class="ti ti-refresh"></i></button>
+    </div>
+    <p style="font-size:11px;color:var(--t3);line-height:1.6;margin:0 0 10px;">
+      Conecte com seu token para sincronizar dados entre JP e Maysa em tempo real.
+    </p>
+    <div style="display:flex;gap:6px;margin-bottom:8px;">
+      <input id="apiTokenInput" type="password" placeholder="Token de acesso (jp2026 / maysa2026)"
+        style="flex:1;background:var(--dark3);border:1px solid var(--bdr2);border-radius:7px;color:var(--t1);font-size:11px;padding:6px 9px;outline:none;font-family:inherit;"
+        onkeydown="if(event.key==='Enter')doApiLogin()">
+      <button class="btn btn-red" onclick="doApiLogin()"><i class="ti ti-plug"></i>Conectar</button>
+    </div>
+    <button class="btn btn-sm" onclick="syncFromAPI()" style="margin-right:6px;"><i class="ti ti-refresh"></i>Sincronizar</button>
+    <button class="btn btn-sm" onclick="doApiLogout()" style="color:var(--t3);"><i class="ti ti-plug-off"></i>Desconectar</button>
+  </div>
+</div>
+<div class="card" style="margin:12px 0 0;"><div class="ch"><div class="ct"><i class="ti ti-database" style="color:var(--red2);margin-right:6px;"></i>Backup e Restauração</div></div><div class="cb"><p style="font-size:11px;color:var(--t3);line-height:1.6;margin:0 0 10px;">Exporte JSON. Importe para restaurar.</p><div style="display:flex;gap:8px;"><button class="btn btn-red" onclick="exportData()"><i class="ti ti-download"></i>Exportar</button><button class="btn" onclick="importData()"><i class="ti ti-upload"></i>Importar</button></div></div></div></div>
             </div>
           </div>
         </div>
@@ -862,8 +883,10 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
   <i class="ti ti-check" id="toastIc"></i><span id="toastMsg">OK</span>
 </div>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
 let META_SOCIOS_PCT = 15;
 
 
@@ -2093,8 +2116,9 @@ function setMeta(field,val){
   if(VIEW==='dashboard') renderDash();
 }
 
-function lsSave(){
+function lsSave(pautaParaSync){
   try{localStorage.setItem('graal_hub_v2',JSON.stringify({OR,CUSTOS,INVESTIMENTOS,LOGS,DRAFTS,DATA_NOVOS:DATA.filter(d=>d._new)}));}catch(e){}
+  if(API_ONLINE && pautaParaSync) lsSaveAPI(pautaParaSync).catch(()=>{});
 }
 function lsLoad(){
   try{
@@ -2151,6 +2175,96 @@ function printView(title){
   w.document.close();showToast('Preparando PDF...','info');
 }
 
+
+// ── API Config ──────────────────────────────────────────────────
+const API_URL = 'https://graal-api.graal-hub.workers.dev/api';
+let API_TOKEN = localStorage.getItem('graal_api_token') || '';
+let API_ONLINE = false; // flag: true quando a API responde
+
+async function apiGet(path) {
+  if (!API_TOKEN) return null;
+  try {
+    const r = await fetch(API_URL + path, {
+      headers: { 'Authorization': 'Bearer ' + API_TOKEN }
+    });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+async function apiPost(path, data) {
+  if (!API_TOKEN) return null;
+  try {
+    const r = await fetch(API_URL + path, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + API_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+async function apiPut(path, data) {
+  if (!API_TOKEN) return null;
+  try {
+    const r = await fetch(API_URL + path, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + API_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+async function checkAPI() {
+  const r = await apiGet('/status');
+  API_ONLINE = !!(r && r.success);
+  const el = document.getElementById('apiStatus');
+  if (el) {
+    el.textContent = API_ONLINE ? '● Online' : '○ Offline';
+    el.style.color  = API_ONLINE ? '#2BB673'  : '#E04030';
+  }
+  return API_ONLINE;
+}
+
+async function syncFromAPI() {
+  if (!API_TOKEN) return;
+  showToast('Sincronizando dados...', 'info');
+  const pautas = await apiGet('/pautas/all');
+  if (pautas && pautas.result) {
+    pautas.result.forEach(p => {
+      if (!DATA.find(x => x.id === p.id)) DATA.push({...p, _new: false});
+    });
+  }
+  const custos = await apiGet('/custos?ano=2026');
+  if (custos && custos.result) {
+    custos.result.forEach(c => {
+      if (!CUSTOS.find(x => x.id === c.id)) CUSTOS.push(c);
+    });
+  }
+  const logs = await apiGet('/logs');
+  if (logs && logs.result) {
+    LOGS.splice(0, 9999, ...logs.result.map(l => ({
+      item: l.item, acao: l.acao, tipo: l.tipo, ts: l.created_at
+    })));
+  }
+  lsSave();
+  renderDash && renderDash();
+  showToast('Dados sincronizados ✓', 'suc');
+}
+
+async function lsSaveAPI(pauta) {
+  if (!API_ONLINE || !pauta) return;
+  if (pauta.id && !pauta._new) {
+    await apiPut('/pautas/' + pauta.id, pauta);
+  } else if (pauta._new) {
+    const r = await apiPost('/pautas', pauta);
+    if (r && r.id) pauta.id = r.id;
+  }
+}
+
 (function(){
   // Tema salvo
   let theme='dark';try{theme=localStorage.getItem('gh_theme')||'dark';}catch(e){}
@@ -2170,6 +2284,12 @@ function printView(title){
   const pc=$('periodChip');if(pc)pc.textContent=(MESF[MO.indexOf(curMes)]||curMes)+'/'+curAno;
 
   lsLoad();
+  // Inicializar API
+  if(API_TOKEN){
+    checkAPI().then(online => {
+      if(online) syncFromAPI();
+    });
+  }
   // Log inicial
   addLog('Sistema','Sistema iniciado — '+DATA.length+' pautas carregadas');
 
@@ -2204,6 +2324,51 @@ function hideTip(){const t=document.getElementById("customTip");if(t)t.remove();
 function exportData(){const snap={version:"graal_hub_v1",exportedAt:new Date().toISOString(),DATA_NOVOS:DATA.filter(d=>d._new),CUSTOS:[...CUSTOS],INVESTIMENTOS:[...INVESTIMENTOS],OR:[...OR],LOGS:[...LOGS],DRAFTS:[...DRAFTS]};const blob=new Blob([JSON.stringify(snap,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="graal_hub_"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(a.href);showToast("Backup exportado!","suc");addLog("Sistema","Backup exportado");}
 function importData(){const inp=document.createElement("input");inp.type="file";inp.accept=".json";inp.onchange=e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const snap=JSON.parse(ev.target.result);if(snap.version!=="graal_hub_v1")throw new Error("Formato inválido");if(Array.isArray(snap.CUSTOS))CUSTOS.splice(0,9999,...snap.CUSTOS);if(Array.isArray(snap.INVESTIMENTOS))INVESTIMENTOS.splice(0,9999,...snap.INVESTIMENTOS);if(Array.isArray(snap.OR))OR.splice(0,9999,...snap.OR);if(Array.isArray(snap.LOGS))LOGS.splice(0,9999,...snap.LOGS);if(Array.isArray(snap.DRAFTS))DRAFTS.splice(0,9999,...snap.DRAFTS);if(Array.isArray(snap.DATA_NOVOS))snap.DATA_NOVOS.forEach(d=>{if(!DATA.find(x=>x.id===d.id))DATA.push(d);});lsSave();showToast("Dados restaurados!","suc");goTo("dashboard");}catch(err){showToast("Erro: "+err.message,"err");}};reader.readAsText(file);};inp.click();}
 function upsertProLaboreMonth(valor,mes){const h=new Date(),ano=h.getFullYear(),emp=EMPS[0];["João Paulo","Maysa Feitosa"].forEach((nome,i)=>{const half=Math.round(valor/2);const idx=CUSTOS.findIndex(c=>c.ano===ano&&c.mes===mes&&c.cat==="Pró-Labore"&&c.empresa===emp&&c.desc.includes(nome));if(idx>-1){CUSTOS[idx].total=half;CUSTOS[idx].val=half;}else CUSTOS.push({id:Date.now()+i,ano,mes,empresa:emp,cat:"Pró-Labore",desc:"Pró-labore — "+nome,qtd:1,val:half,total:half});});addLog("Custo","Pró-Labore "+mes+"/"+ano+": "+M(valor));lsSave();if(VIEW==="custos")renderCustos();}
+
+// ── API Login ────────────────────────────────────────────────────
+function doApiLogin() {
+  const t = document.getElementById('apiTokenInput')?.value?.trim();
+  if (!t) return showToast('Digite o token de acesso', 'err');
+  API_TOKEN = t;
+  localStorage.setItem('graal_api_token', t);
+  checkAPI().then(online => {
+    if (online) {
+      showToast('Conectado à API ✓', 'suc');
+      syncFromAPI();
+    } else {
+      showToast('Token inválido', 'err');
+      API_TOKEN = '';
+      localStorage.removeItem('graal_api_token');
+    }
+  });
+}
+
+function doApiLogout() {
+  API_TOKEN = '';
+  API_ONLINE = false;
+  localStorage.removeItem('graal_api_token');
+  const el = document.getElementById('apiStatus');
+  if (el) { el.textContent = '○ Offline'; el.style.color = '#E04030'; }
+  showToast('Desconectado da API', 'info');
+}
+
+// Gerar link de assinatura para PP/PI
+function gerarLinkAssinatura(pautaId, tipo, num) {
+  const hash = btoa(pautaId + '-' + tipo + '-' + num + '-' + Date.now()).replace(/=/g,'').slice(0,16);
+  const url = window.location.origin + '/doc/' + hash;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url);
+    showToast('Link copiado: ' + url, 'suc');
+  } else {
+    showToast('Link: ' + url, 'suc');
+  }
+  if (API_ONLINE) {
+    apiPost('/doc/' + hash + '/create', {
+      pauta_id: pautaId, doc_tipo: tipo, doc_num: num, doc_hash: hash
+    }).catch(()=>{});
+  }
+  return url;
+}
 
 </script>
 </body>
