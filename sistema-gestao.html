@@ -907,8 +907,10 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
   <div id="nfModalContent" style="background:var(--dark2);border-radius:14px;padding:20px;max-width:420px;width:100%;border:1px solid var(--bdr2);"></div>
 </div>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
 
 
 
@@ -2320,7 +2322,7 @@ function doApiLogout() {
 // Gerar link de assinatura para PP/PI
 function gerarLinkAssinatura(pautaId, tipo, num) {
   const hash = btoa(pautaId + '-' + tipo + '-' + num + '-' + Date.now()).replace(/=/g,'').slice(0,16);
-  const url = window.location.origin + '/doc/' + hash;
+  const url = 'https://doc.graalhub.com/api/doc/' + hash;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(url);
     showToast('Link copiado: ' + url, 'suc');
@@ -2618,6 +2620,7 @@ async function nfSalvar(idx) {
   renderDem();
   showToast('NF '+num+' registrada!','suc');
 }
+
 
 </script>
 </body>
