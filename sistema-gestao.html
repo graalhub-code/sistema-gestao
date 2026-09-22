@@ -1011,8 +1011,12 @@ id="sc-statusorc" class="screen">
 
 
 
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
+
 
 
 
@@ -2383,11 +2387,95 @@ async function lsSaveAPI(pauta) {
   }
 }
 
+
+const AUTH_USERS = {
+  jp:    { senha: 'graal@jp2026',   token: 'jp2026',    nome: 'João Paulo Leal',  iniciais: 'JP' },
+  maysa: { senha: 'graal@may2026',  token: 'maysa2026', nome: 'Maysa Feitosa',    iniciais: 'MF' }
+};
+let USUARIO_ATUAL = null;
+
+function mostrarLogin() {
+  const ls = document.getElementById('loginScreen');
+  const layout = document.querySelector('.layout');
+  if (ls) ls.style.display = 'flex';
+  if (layout) layout.style.display = 'none';
+}
+
+function mostrarSistema(usuario) {
+  USUARIO_ATUAL = usuario;
+  const ls = document.getElementById('loginScreen');
+  const layout = document.querySelector('.layout');
+  if (ls) ls.style.display = 'none';
+  if (layout) layout.style.display = '';
+  // Atualizar nome do usuário na UI
+  const nm = document.getElementById('userName');
+  if (nm) nm.textContent = usuario.iniciais;
+  const nmFull = document.getElementById('userNameFull');
+  if (nmFull) nmFull.textContent = usuario.nome;
+  // Definir API token automaticamente
+  API_TOKEN = usuario.token;
+  localStorage.setItem('graal_api_token', API_TOKEN);
+  // Conectar API
+  checkAPI().then(online => { if (online) syncFromAPI(); });
+}
+
+function doLogin() {
+  const user = document.getElementById('loginUser')?.value;
+  const pass = document.getElementById('loginPass')?.value;
+  const err  = document.getElementById('loginErr');
+  if (!user) { if (err) { err.style.display='block'; err.textContent='Selecione um usuário.'; } return; }
+  const u = AUTH_USERS[user];
+  if (!u || pass !== u.senha) {
+    if (err) { err.style.display='block'; err.textContent='Usuário ou senha incorretos.'; }
+    if (document.getElementById('loginPass')) document.getElementById('loginPass').value = '';
+    return;
+  }
+  if (err) err.style.display = 'none';
+  // Salvar sessão
+  try { sessionStorage.setItem('graal_session', JSON.stringify({ user, ts: Date.now() })); } catch(e){}
+  mostrarSistema(u);
+  addLog('Acesso', u.nome+' entrou no sistema', 'auth');
+}
+
+function doLogout() {
+  try { sessionStorage.removeItem('graal_session'); } catch(e){}
+  USUARIO_ATUAL = null;
+  API_TOKEN = ''; API_ONLINE = false;
+  localStorage.removeItem('graal_api_token');
+  const el = document.getElementById('loginPass');
+  if (el) el.value = '';
+  const sel = document.getElementById('loginUser');
+  if (sel) sel.value = '';
+  const ls = document.getElementById('loginScreen');
+  const layout = document.querySelector('.layout');
+  if (ls) ls.style.display = 'flex';
+  if (layout) layout.style.display = 'none';
+}
+
+function checkSession() {
+  // Login temporariamente desativado — acesso direto
+  // mostrarSistema inline para não depender de AUTH_USERS (hoisting)
+  const _layout = document.querySelector('.layout');
+  const _ls = document.getElementById('loginScreen');
+  if (_ls) _ls.style.display = 'none';
+  if (_layout) _layout.style.display = '';
+  // Definir token da API como JP por padrão
+  API_TOKEN = 'jp2026';
+  try { localStorage.setItem('graal_api_token', API_TOKEN); } catch(e) {}
+  // Atualizar badge
+  const nm = document.getElementById('userName');
+  if (nm) nm.textContent = 'JP';
+  const nmFull = document.getElementById('userNameFull');
+  if (nmFull) nmFull.textContent = 'João Paulo Leal';
+  USUARIO_ATUAL = { iniciais: 'JP', nome: 'João Paulo Leal', token: 'jp2026' };
+  return true;
+}
+
+
 (function(){
   // Verificar sessão antes de qualquer coisa
-  const _ls = document.getElementById('loginScreen');
+  // Ocultar layout temporariamente (checkSession vai mostrar)
   const _layout = document.querySelector('.layout');
-  if (_ls) _ls.style.display = 'none'; // ocultar até checar sessão
   if (_layout) _layout.style.display = 'none';
   // Tema salvo
   let theme='dark';try{theme=localStorage.getItem('gh_theme')||'dark';}catch(e){}
@@ -2834,90 +2922,6 @@ async function syncPlanilha() {
 // JP:    graal@jp2026   token: jp2026   nome: João Paulo
 // Maysa: graal@may2026  token: maysa2026 nome: Maysa Feitosa
 // ══════════════════════════════════════════════════════════════
-const AUTH_USERS = {
-  jp:    { senha: 'graal@jp2026',   token: 'jp2026',    nome: 'João Paulo Leal',  iniciais: 'JP' },
-  maysa: { senha: 'graal@may2026',  token: 'maysa2026', nome: 'Maysa Feitosa',    iniciais: 'MF' }
-};
-let USUARIO_ATUAL = null;
-
-function mostrarLogin() {
-  const ls = document.getElementById('loginScreen');
-  const layout = document.querySelector('.layout');
-  if (ls) ls.style.display = 'flex';
-  if (layout) layout.style.display = 'none';
-}
-
-function mostrarSistema(usuario) {
-  USUARIO_ATUAL = usuario;
-  const ls = document.getElementById('loginScreen');
-  const layout = document.querySelector('.layout');
-  if (ls) ls.style.display = 'none';
-  if (layout) layout.style.display = '';
-  // Atualizar nome do usuário na UI
-  const nm = document.getElementById('userName');
-  if (nm) nm.textContent = usuario.iniciais;
-  const nmFull = document.getElementById('userNameFull');
-  if (nmFull) nmFull.textContent = usuario.nome;
-  // Definir API token automaticamente
-  API_TOKEN = usuario.token;
-  localStorage.setItem('graal_api_token', API_TOKEN);
-  // Conectar API
-  checkAPI().then(online => { if (online) syncFromAPI(); });
-}
-
-function doLogin() {
-  const user = document.getElementById('loginUser')?.value;
-  const pass = document.getElementById('loginPass')?.value;
-  const err  = document.getElementById('loginErr');
-  if (!user) { if (err) { err.style.display='block'; err.textContent='Selecione um usuário.'; } return; }
-  const u = AUTH_USERS[user];
-  if (!u || pass !== u.senha) {
-    if (err) { err.style.display='block'; err.textContent='Usuário ou senha incorretos.'; }
-    if (document.getElementById('loginPass')) document.getElementById('loginPass').value = '';
-    return;
-  }
-  if (err) err.style.display = 'none';
-  // Salvar sessão
-  try { sessionStorage.setItem('graal_session', JSON.stringify({ user, ts: Date.now() })); } catch(e){}
-  mostrarSistema(u);
-  addLog('Acesso', u.nome+' entrou no sistema', 'auth');
-}
-
-function doLogout() {
-  try { sessionStorage.removeItem('graal_session'); } catch(e){}
-  USUARIO_ATUAL = null;
-  API_TOKEN = ''; API_ONLINE = false;
-  localStorage.removeItem('graal_api_token');
-  const el = document.getElementById('loginPass');
-  if (el) el.value = '';
-  const sel = document.getElementById('loginUser');
-  if (sel) sel.value = '';
-  const ls = document.getElementById('loginScreen');
-  const layout = document.querySelector('.layout');
-  if (ls) ls.style.display = 'flex';
-  if (layout) layout.style.display = 'none';
-}
-
-function checkSession() {
-  // Login temporariamente desativado — acesso direto
-  // Para reativar: descomentar o bloco abaixo e remover o return true
-  /*
-  try {
-    const raw = sessionStorage.getItem('graal_session');
-    if (!raw) return false;
-    const s = JSON.parse(raw);
-    if (Date.now() - s.ts > 12 * 3600 * 1000) { sessionStorage.removeItem('graal_session'); return false; }
-    const u = AUTH_USERS[s.user];
-    if (!u) return false;
-    mostrarSistema(u);
-    return true;
-  } catch(e) { return false; }
-  */
-  // Acesso direto: mostrar sistema com usuário padrão
-  mostrarSistema(AUTH_USERS['jp']);
-  return true;
-}
-
 // ══════════════════════════════════════════════════════════════
 // HISTÓRICO DE VERSÕES — log de alterações por pauta
 // ══════════════════════════════════════════════════════════════
@@ -2974,6 +2978,8 @@ function verHistorico(pautaId, cli, camp) {
     <button onclick="document.getElementById('histModal').style.display='none'"
       class="btn btn-sm" style="margin-top:12px;">Fechar</button>`;
 }
+
+
 
 
 
