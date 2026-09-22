@@ -95,7 +95,7 @@ body{background:var(--dark);font-family:'Inter',system-ui,sans-serif;color:var(-
 .ct{font-size:12px;font-weight:600;color:var(--t1);}
 .cb{padding:13px 14px;}
 .tbl{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;table-layout:fixed;}
+table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:580px;}
 thead th{padding:7px 11px;text-align:left;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;background:var(--dark3);border-bottom:1px solid var(--bdr);white-space:nowrap;}
 tbody tr{border-bottom:1px solid var(--bdr);transition:background .1s;}
 tbody tr:hover{background:var(--dark3);}
@@ -221,6 +221,7 @@ tfoot td{padding:8px 11px;font-size:11px;font-weight:700;border-top:1px solid va
   .sb-overlay.show{display:block;}
   .sb-toggle{display:flex!important;}
   .tb-hide-sm{display:none!important;}
+  .tb-hide-mob{display:none!important;}
   .app{flex-direction:column;}
   .main{width:100%;}
   .kgrid{grid-template-columns:repeat(2,1fr);gap:7px;}
@@ -229,10 +230,17 @@ tfoot td{padding:8px 11px;font-size:11px;font-weight:700;border-top:1px solid va
   .fsec{grid-column:1;}
   .calc-preview{gap:6px;}
   .ffoot{justify-content:center;}
-  .topbar{padding:0 12px;}
-  .content{padding:10px 10px 0;}
+  .topbar{padding:0 10px;}
+  .content{padding:10px 8px 0;}
+  .gfbar{padding:5px 8px;gap:5px;}
+  .gfbar .fsel{min-width:80px;max-width:110px;font-size:10px;}
   .chart-row,.chart-row3,.cfg-grid{grid-template-columns:1fr;}
-  .finp{width:130px;}
+  .finp{width:110px;}
+  .org-grid{grid-template-columns:1fr!important;}
+  .kc-val{font-size:16px;}
+  .kc-lbl{font-size:9px;}
+  .kc{padding:10px 10px 8px;}
+  .oline{font-size:11px;}
 }
 @media (max-width:420px){
   .kgrid{grid-template-columns:1fr 1fr;}
@@ -377,6 +385,43 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 .sb-logo-img{width:100%;height:auto;max-height:46px;object-fit:contain;background:#fff;border-radius:8px;padding:4px 10px;display:block;}
 @media(max-width:900px){.kgrid5{grid-template-columns:repeat(3,1fr);}.org-grid{grid-template-columns:1fr;}.goal-row{grid-template-columns:1fr;}}
 @media(max-width:600px){.kgrid5{grid-template-columns:repeat(2,1fr);}.tb-hide-md{display:none!important;}}
+
+/* ── Colunas responsivas de tabela ──────────────────────────── */
+.tb-hide-mob{display:none!important;}
+@media(max-width:680px){
+  .col-hide-sm{display:none!important;}
+}
+@media(max-width:480px){
+  .col-hide-xs{display:none!important;}
+}
+
+/* ── Colunas responsivas por tela ────────────────────────────────── */
+@media(max-width:680px){
+  #sc-demandas table th:nth-child(3),#sc-demandas table td:nth-child(3),
+  #sc-demandas table th:nth-child(4),#sc-demandas table td:nth-child(4){display:none!important;}
+  #sc-relatorio table th:nth-child(3),#sc-relatorio table td:nth-child(3),
+  #sc-relatorio table th:nth-child(6),#sc-relatorio table td:nth-child(6){display:none!important;}
+  #sc-clientes  table th:nth-child(1),#sc-clientes  table td:nth-child(1){display:none!important;}
+  #sc-custos    table th:nth-child(2),#sc-custos    table td:nth-child(2){display:none!important;}
+  #sc-recebiveis table th:nth-child(4),#sc-recebiveis table td:nth-child(4){display:none!important;}
+}
+@media(max-width:480px){
+  #sc-demandas table th:nth-child(5),#sc-demandas table td:nth-child(5),
+  #sc-demandas table th:nth-child(6),#sc-demandas table td:nth-child(6),
+  #sc-demandas table th:nth-child(8),#sc-demandas table td:nth-child(8),
+  #sc-demandas table th:nth-child(10),#sc-demandas table td:nth-child(10){display:none!important;}
+  #sc-relatorio table th:nth-child(4),#sc-relatorio table td:nth-child(4),
+  #sc-relatorio table th:nth-child(7),#sc-relatorio table td:nth-child(7){display:none!important;}
+  #sc-clientes table th:nth-child(3),#sc-clientes table td:nth-child(3),
+  #sc-clientes table th:nth-child(5),#sc-clientes table td:nth-child(5),
+  #sc-clientes table th:nth-child(6),#sc-clientes table td:nth-child(6){display:none!important;}
+  #sc-custos table th:nth-child(1),#sc-custos table td:nth-child(1),
+  #sc-custos table th:nth-child(5),#sc-custos table td:nth-child(5),
+  #sc-custos table th:nth-child(6),#sc-custos table td:nth-child(6){display:none!important;}
+  #sc-recebiveis table th:nth-child(1),#sc-recebiveis table td:nth-child(1),
+  #sc-recebiveis table th:nth-child(5),#sc-recebiveis table td:nth-child(5),
+  #sc-recebiveis table th:nth-child(6),#sc-recebiveis table td:nth-child(6){display:none!important;}
+}
 </style>
 <style>
 @media print {
@@ -441,7 +486,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
   <main class="main">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:10px;">
-        <button class="btn btn-sm" id="sbToggle" onclick="toggleSidebar()" style="display:none;"><i class="ti ti-menu-2"></i></button>
+        <button class="btn btn-sm sb-toggle" id="sbToggle" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button>
         <span class="pg-title" id="pgTitle">Visão Geral</span>
       </div>
       <div class="tb-r">
@@ -452,9 +497,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
             style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#E04030,#ff6b5b);
             display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;
             color:#fff;cursor:pointer;flex-shrink:0;user-select:none;">??</div>
-          <div id="userMenu" class="st-dd2" style="display:none;position:absolute;right:0;top:36px;
-            background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:8px;
-            min-width:160px;z-index:9000;box-shadow:0 8px 32px rgba(0,0,0,.6);">
+          <div id="userMenu" class="st-dd2" style="display:none;position:absolute;right:0;top:36px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:8px;min-width:160px;max-width:calc(100vw - 20px);z-index:9000;box-shadow:0 8px 32px rgba(0,0,0,.6);">
             <div id="userNameFull" style="font-size:11px;color:#666;padding:4px 8px 8px;border-bottom:1px solid #2a2a2a;margin-bottom:4px;">Carregando...</div>
             <button onclick="doLogout()" style="width:100%;background:none;border:none;
               color:#E04030;font-size:12px;padding:7px 10px;text-align:left;cursor:pointer;
@@ -592,7 +635,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
             </div>
           </div>
           <div class="tbl"><table>
-            <thead><tr><th>Cliente</th><th>Campanha</th><th>Empresa</th><th>Tipo</th><th>Período</th><th class="tr">R$ Bruto</th><th class="tr">Honorários</th><th>Pautas</th><th>Financeiro</th><th style="width:80px;"></th></tr></thead>
+            <thead><tr><th>Cliente</th><th>Campanha</th><th class="col-hide-sm">Empresa</th><th class="col-hide-sm">Tipo</th><th class="col-hide-xs">Período</th><th class="col-hide-xs tr">R$ Bruto</th><th class="tr">Honorários</th><th class="col-hide-xs">Pautas</th><th>Financeiro</th><th style="width:80px;" class="col-hide-xs"></th></tr></thead>
             <tbody id="demR"></tbody>
             <tfoot><tr id="demFoot"></tr></tfoot>
           </table></div>
@@ -642,7 +685,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
         <div class="card" style="margin:0;">
           <div class="ch"><div class="ct" id="relTit">Relatório</div></div>
           <div class="tbl"><table>
-            <thead><tr><th>Cliente</th><th>Campanha</th><th>Tipo</th><th class="tr">R$ Bruto</th><th class="tr">Honorários</th><th class="tr">% Imp.</th><th class="tr">R$ Impostos</th><th class="tr">R$ Lucro</th></tr></thead>
+            <thead><tr><th>Cliente</th><th>Campanha</th><th class="col-hide-sm">Tipo</th><th class="tr">R$ Bruto</th><th class="tr">Honorários</th><th class="col-hide-sm tr">% Imp.</th><th class="col-hide-xs tr">R$ Impostos</th><th class="col-hide-xs tr">R$ Lucro</th></tr></thead>
             <tbody id="relR"></tbody>
             <tfoot id="relFoot"></tfoot>
           </table></div>
@@ -659,7 +702,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 <div class="card" style="margin:0;">
           <div class="ch"><div class="ct">Ranking de clientes</div></div>
           <div class="tbl"><table>
-            <thead><tr><th>#</th><th>Cliente</th><th class="tr">R$ Bruto</th><th class="tr">Honorários</th><th class="tr">Dem.</th><th class="tr">% Margem</th><th>Participação</th></tr></thead>
+            <thead class="col-hide-sm"><tr><th>#</th><th>Cliente</th><th class="col-hide-xs tr">R$ Bruto</th><th class="tr">Honorários</th><th class="col-hide-xs tr">Dem.</th><th class="col-hide-xs tr">% Margem</th><th>Participação</th></tr></thead>
             <tbody id="cliR"></tbody>
           </table></div>
         </div>
@@ -679,7 +722,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
             </div>
           </div>
           <div class="tbl"><table>
-            <thead><tr><th>Mês/Ano</th><th>Empresa</th><th>Categoria</th><th>Descrição</th><th class="tr">Qtd.</th><th class="tr">R$ Unit.</th><th class="tr">R$ Total</th></tr></thead>
+            <thead class="col-hide-xs"><tr><th>Mês/Ano</th><th class="col-hide-sm">Empresa</th><th>Categoria</th><th>Descrição</th><th class="col-hide-xs tr">Qtd.</th><th class="col-hide-xs tr">R$ Unit.</th><th class="tr">R$ Total</th></tr></thead>
             <tbody id="cusRows"><tr><td colspan="7" class="empty"><i class="ti ti-coin-off"></i>Nenhum custo registrado</td></tr></tbody>
             <tfoot><tr id="cusFoot"></tr></tfoot>
           </table></div>
@@ -782,7 +825,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
             </div>
           </div>
           <div class="tbl"><table>
-            <thead><tr><th>Mês/Ano</th><th>Cliente</th><th>Campanha</th><th>Tipo</th><th class="tr">R$ Bruto</th><th class="tr">R$ Honorários</th><th>Status</th></tr></thead>
+            <thead class="col-hide-xs"><tr><th>Mês/Ano</th><th>Cliente</th><th>Campanha</th><th class="col-hide-sm">Tipo</th><th class="col-hide-xs tr">R$ Bruto</th><th class="col-hide-xs tr">R$ Honorários</th><th>Status</th></tr></thead>
             <tbody id="rcRows"></tbody>
             <tfoot><tr id="rcFoot"></tr></tfoot>
           </table></div>
@@ -1015,7 +1058,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script>
+
 
 
 
@@ -1225,7 +1268,7 @@ function stMenuProd(idx,btn,e){
   const opts=['Aguardando aprovação','Aprovada','Cancelada','Concluído','Em execução','Em revisão','Entregue'];
   const dd=document.createElement('div');dd.className='st-dd2';
   dd.style.cssText='position:fixed;z-index:900;background:var(--dark4,#2e2929);border:1px solid var(--bdr2);border-radius:8px;overflow:hidden;min-width:150px;box-shadow:0 6px 20px rgba(0,0,0,.5);';
-  const r=btn.getBoundingClientRect();dd.style.top=(r.bottom+4)+'px';dd.style.left=r.left+'px';
+  const r=btn.getBoundingClientRect();dd.style.top=(r.bottom+4)+'px';dd.style.left=Math.min(r.left,window.innerWidth-165)+'px';
   opts.forEach(st=>{
     const dv=document.createElement('div');
     dv.style.cssText='padding:8px 12px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--bdr);color:var(--t2);';
@@ -1265,7 +1308,7 @@ function stMenu(idx,btn,e){
   dd.style.cssText='position:fixed;z-index:900;background:var(--dark4);border:1px solid var(--bdr2);border-radius:8px;overflow:hidden;min-width:150px;box-shadow:0 6px 20px rgba(0,0,0,.5);';
   const r=btn.getBoundingClientRect();
   dd.style.top=(r.bottom+4)+'px';
-  dd.style.left=r.left+'px';
+  dd.style.left=Math.min(r.left,window.innerWidth-165)+'px';
   opts.forEach(st=>{
     const d=document.createElement('div');
     d.style.cssText='padding:8px 12px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--bdr);color:var(--t2);';
