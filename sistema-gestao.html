@@ -606,7 +606,13 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
       <div id="sc-novorc" class="screen">
         <div class="attn" style="margin-bottom:10px;"><i class="ti ti-info-circle"></i>Monte o orçamento: cliente, tipo, parceiro/veículo, prazo e custos internos. Resultado financeiro atualizado em tempo real.</div>
       </div>
-      <div id="sc-statusorc" class="screen">
+      <div <div id="orgChart" style="display:none;"></div>
+<div id="orgSecs" style="display:none;"></div>
+<div id="orgParcRows" style="display:none;"></div>
+<div id="orgResBox" style="display:none;"></div>
+<div id="orcParcelasBox" style="display:none;"></div>
+<div id="parcRestante" style="display:none;"></div>
+id="sc-statusorc" class="screen">
         <div class="attn"><i class="ti ti-info-circle"></i>Acompanhe todos os orçamentos por status e empresa. Clique no chip de status para alterá-lo.</div>
       </div>
       <div id="sc-nova" class="screen">
@@ -689,10 +695,10 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
         <div class="card" style="margin:0;max-width:600px;">
           <div class="ch"><div class="ct">Registrar custo mensal</div></div>
           <div class="cb"><div class="fg">
-            <div class="fld"><label>Ano</label><select id="ncAno"><option>2026</option><option>2025</option><option>2024</option></select></div>
-            <div class="fld"><label>Mês</label><select id="ncMes"><option value="Jan">Janeiro</option><option value="Fev">Fevereiro</option><option value="Mar">Março</option><option value="Abr">Abril</option><option value="Mai">Maio</option><option value="Jun">Junho</option><option value="Jul">Julho</option><option value="Ago">Agosto</option><option value="Set">Setembro</option><option value="Out">Outubro</option><option value="Nov">Novembro</option><option value="Dez">Dezembro</option></select></div>
-            <div class="fld"><label>Empresa</label><select id="ncEmp"><option>GRAAL.hub</option><option>GRAAL.hub / Camila</option><option>GRAAL.hub / R. Lopes</option></select></div>
-            <div class="fld"><label>Categoria</label><select id="ncCat"><option value="">Selecione...</option><option>Aluguel/Sede</option><option>Assinatura/Software</option><option>Benefícios</option><option>Combustível</option><option>Contador/Jurídico</option><option>Equipamento</option><option>Freelancer</option><option>Imposto/DAS</option><option>Internet/Telefone</option><option>Luz/Energia</option><option>Manutenção</option><option>Marketing</option><option>Material de Escritório</option><option>Outros</option><option>Plano de Saúde</option><option>Pró-Labore</option><option>Publicidade</option><option>Salário</option><option>Transporte</option><option>Água/Gás</option><option value="__novo">+ Adicionar novo...</option></select></div>
+            <div class="fld"><label>Ano</label><select id="ncAno" onchange="renderCustos()"><option>2026</option><option>2025</option><option>2024</option></select></div>
+            <div class="fld"><label>Mês</label><select id="ncMes" onchange="renderCustos()"><option value="Jan">Janeiro</option><option value="Fev">Fevereiro</option><option value="Mar">Março</option><option value="Abr">Abril</option><option value="Mai">Maio</option><option value="Jun">Junho</option><option value="Jul">Julho</option><option value="Ago">Agosto</option><option value="Set">Setembro</option><option value="Out">Outubro</option><option value="Nov">Novembro</option><option value="Dez">Dezembro</option></select></div>
+            <div class="fld"><label>Empresa</label><select id="ncEmp" onchange="renderCustos()"><option>GRAAL.hub</option><option>GRAAL.hub / Camila</option><option>GRAAL.hub / R. Lopes</option></select></div>
+            <div class="fld"><label>Categoria</label><select id="ncCat" onchange="renderCustos()"><option value="">Selecione...</option><option>Aluguel/Sede</option><option>Assinatura/Software</option><option>Benefícios</option><option>Combustível</option><option>Contador/Jurídico</option><option>Equipamento</option><option>Freelancer</option><option>Imposto/DAS</option><option>Internet/Telefone</option><option>Luz/Energia</option><option>Manutenção</option><option>Marketing</option><option>Material de Escritório</option><option>Outros</option><option>Plano de Saúde</option><option>Pró-Labore</option><option>Publicidade</option><option>Salário</option><option>Transporte</option><option>Água/Gás</option><option value="__novo">+ Adicionar novo...</option></select></div>
             <div class="fld fspan"><label>Descrição</label><input id="ncDesc" placeholder="Descreva o custo..."></div>
             <div class="fld"><label>Quantidade</label><input id="ncQtd" type="number" value="1" min="1" oninput="ncUpd()"></div>
             <div class="fld"><label>R$ Valor unitário</label><input id="ncVal" type="number" step="0.01" placeholder="0,00" oninput="ncUpd()"></div>
@@ -715,9 +721,9 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
           <div class="modal-box" style="width:420px;">
             <h3 style="font-size:13px;font-weight:700;margin-bottom:14px;"><i class="ti ti-chart-bar" style="color:var(--red2);margin-right:6px;"></i>Novo Investimento</h3>
             <div class="fg">
-              <div class="fld"><label>Ano</label><select id="invAno"><option>2026</option><option>2025</option></select></div>
-              <div class="fld"><label>Trimestre</label><select id="invTri"><option value="T1">T1 — Jan/Fev/Mar</option><option value="T2">T2 — Abr/Mai/Jun</option><option value="T3">T3 — Jul/Ago/Set</option><option value="T4">T4 — Out/Nov/Dez</option></select></div>
-              <div class="fld fspan"><label>Categoria</label><select id="invCat"><option value="">Selecione...</option><option>Capacitação/Curso</option><option>Equipamento</option><option>Expansão/Sede</option><option>Ferramentas/Software</option><option>Infraestrutura</option><option>Marketing/Branding</option><option>Outros</option><option>Reserva de Emergência</option></select></div>
+              <div class="fld"><label>Ano</label><select id="invAno" onchange="renderInvestimentos()"><option>2026</option><option>2025</option></select></div>
+              <div class="fld"><label>Trimestre</label><select id="invTri" onchange="renderInvestimentos()"><option value="T1">T1 — Jan/Fev/Mar</option><option value="T2">T2 — Abr/Mai/Jun</option><option value="T3">T3 — Jul/Ago/Set</option><option value="T4">T4 — Out/Nov/Dez</option></select></div>
+              <div class="fld fspan"><label>Categoria</label><select id="invCat" onchange="renderInvestimentos()"><option value="">Selecione...</option><option>Capacitação/Curso</option><option>Equipamento</option><option>Expansão/Sede</option><option>Ferramentas/Software</option><option>Infraestrutura</option><option>Marketing/Branding</option><option>Outros</option><option>Reserva de Emergência</option></select></div>
               <div class="fld fspan"><label>Descrição</label><input id="invDesc" placeholder="Descreva o investimento..."></div>
               <div class="fld fspan"><label>R$ Valor</label><input id="invVal" type="number" step="0.01" placeholder="0,00"></div>
             </div>
@@ -729,6 +735,13 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
         </div>
       </div>
       <div id="sc-socios" class="screen">
+        <div style="max-width:500px;margin:0 auto 16px;"><canvas id="socChart" height="220"></canvas></div>
+        <div id="soList"></div>
+        <div id="soEmp"></div>
+        <div id="soEmpChart"></div>
+        <div id="soSt"></div>
+        <div id="soStChart"></div>
+
         <div class="attn"><i class="ti ti-info-circle"></i>Distribuição do lucro — João Paulo (51%) · Maysa Feitosa (49%). Lucro = Rentabilidade − Custos Mensais − Investimentos.</div>
         <div style="display:flex;gap:9px;margin-bottom:12px;flex-wrap:wrap;">
           <div class="fld"><label>Ano</label><select class="fsel" id="socAno" onchange="renderSocios()"><option>2026</option><option>2025</option><option>2024</option><option>2023</option></select></div>
@@ -992,8 +1005,10 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 </div>
 
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
 
 
 
@@ -1565,13 +1580,18 @@ function buildBarYear(){
 // ── renderDem ─────────────────────────────────────────────────────────
 let pgDem=1; const PG=10;
 function getFilt(){
-  const s=($('srcD')||{value:''}).value.toLowerCase();
+  const s=($('srcD')||{value:''}).value.toLowerCase().trim();
   const t=($('fDTipo')||{value:''}).value;
   const st=($('fDSt')||{value:''}).value;
   return demFilt().filter(d=>{
     if(t&&d.tipo!==t) return false;
     if(st&&d.st!==st) return false;
-    if(s&&!d.cli.toLowerCase().includes(s)&&!d.camp.toLowerCase().includes(s)) return false;
+    if(s){
+      const _c=(d.cli||d.cliente||'').toLowerCase();
+      const _p=(d.camp||d.campanha||'').toLowerCase();
+      const _v=(d.vei||d.veiculo||'').toLowerCase();
+      if(!_c.includes(s)&&!_p.includes(s)&&!_v.includes(s)) return false;
+    }
     return true;
   });
 }
@@ -2872,17 +2892,23 @@ function doLogout() {
 }
 
 function checkSession() {
+  // Login temporariamente desativado — acesso direto
+  // Para reativar: descomentar o bloco abaixo e remover o return true
+  /*
   try {
     const raw = sessionStorage.getItem('graal_session');
     if (!raw) return false;
     const s = JSON.parse(raw);
-    // Sessão expira em 12h
     if (Date.now() - s.ts > 12 * 3600 * 1000) { sessionStorage.removeItem('graal_session'); return false; }
     const u = AUTH_USERS[s.user];
     if (!u) return false;
     mostrarSistema(u);
     return true;
   } catch(e) { return false; }
+  */
+  // Acesso direto: mostrar sistema com usuário padrão
+  mostrarSistema(AUTH_USERS['jp']);
+  return true;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2941,6 +2967,7 @@ function verHistorico(pautaId, cli, camp) {
     <button onclick="document.getElementById('histModal').style.display='none'"
       class="btn btn-sm" style="margin-top:12px;">Fechar</button>`;
 }
+
 
 
 </script>
