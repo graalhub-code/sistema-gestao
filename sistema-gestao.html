@@ -95,7 +95,7 @@ body{background:var(--dark);font-family:'Inter',system-ui,sans-serif;color:var(-
 .fsep{flex:1;}
 .dash-hero{display:flex;align-items:center;gap:14px;background:var(--dark2);border:1px solid var(--bdr);border-radius:12px;padding:14px 18px;margin-bottom:13px;}
 .kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px;}
-.kc-q{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.4);font-size:10px;font-weight:700;cursor:help;line-height:1;margin-left:auto;flex-shrink:0;transition:background .15s,color .15s;}.kc-q:hover{background:rgba(255,255,255,0.2);color:#fff;}.kc{background:var(--dark2);border:1px solid var(--bdr);border-radius:12px;padding:13px 14px;position:relative;overflow:hidden;}
+.kc{cursor:help;background:var(--dark2);border:1px solid var(--bdr);border-radius:12px;padding:13px 14px;position:relative;overflow:hidden;}
 .kc-bar{position:absolute;top:0;left:0;right:0;height:2px;}
 .kc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
 .kc-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
@@ -673,9 +673,9 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
       <div id="sc-custos" class="screen">
         <div class="attn"><i class="ti ti-info-circle"></i><div><b>Custos Mensais — ⚠ sem dados históricos na planilha</b><br>Registre custos operacionais: aluguel, pró-labore, impostos, software etc. Impactam na rentabilidade e na distribuição entre os sócios.</div></div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:10px;">
-          <div class="kc"><div class="kc-bar" style="background:#E84855;"></div><div class="kc-top"><div class="kc-ic" style="background:#E8485522;"><i class="ti ti-trending-down" style="color:#E84855;"></i></div></div><div class="kc-val" id="cusTotLbl">R$ 0,00</div><div class="kc-lbl">Total no período</div></div>
-          <div class="kc"><div class="kc-bar" style="background:#3A99AC;"></div><div class="kc-top"><div class="kc-ic" style="background:#3A99AC22;"><i class="ti ti-percentage" style="color:#3A99AC;"></i></div></div><div class="kc-val" id="cusPctLbl">—</div><div class="kc-lbl">% sobre bruto</div></div>
-          <div class="kc"><div class="kc-bar" style="background:#F2B705;"></div><div class="kc-top"><div class="kc-ic" style="background:#F2B70522;"><i class="ti ti-list" style="color:#F2B705;"></i></div></div><div class="kc-val" id="cusNLbl">0</div><div class="kc-lbl">Lançamentos</div></div>
+          <div class="kc" title="Soma dos custos mensais lançados no período selecionado" style="cursor:help;"><div class="kc-bar" style="background:#E84855;"></div><div class="kc-top"><div class="kc-ic" style="background:#E8485522;"><i class="ti ti-trending-down" style="color:#E84855;"></i></div></div><div class="kc-val" id="cusTotLbl">R$ 0,00</div><div class="kc-lbl">Total no período</div></div>
+          <div class="kc" title="Custos como percentual do faturamento bruto — ideal abaixo de 30%" style="cursor:help;"><div class="kc-bar" style="background:#3A99AC;"></div><div class="kc-top"><div class="kc-ic" style="background:#3A99AC22;"><i class="ti ti-percentage" style="color:#3A99AC;"></i></div></div><div class="kc-val" id="cusPctLbl">—</div><div class="kc-lbl">% sobre bruto</div></div>
+          <div class="kc" title="Número de lançamentos de custo registrados no período" style="cursor:help;"><div class="kc-bar" style="background:#F2B705;"></div><div class="kc-top"><div class="kc-ic" style="background:#F2B70522;"><i class="ti ti-list" style="color:#F2B705;"></i></div></div><div class="kc-val" id="cusNLbl">0</div><div class="kc-lbl">Lançamentos</div></div>
         </div>
         <div class="card" style="margin:0;">
           <div class="ch"><div class="ct">Custos registrados</div>
@@ -760,9 +760,9 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
           <span style="font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block;"></span>Recebido</span>
         </div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;">
-          <div class="kc"><div class="kc-bar" style="background:#F2B705;"></div><div class="kc-top"><div class="kc-ic" style="background:#F2B70522;"><i class="ti ti-coin" style="color:#F2B705;"></i></div></div><div class="kc-val" id="calAReceberLbl">R$ 0,00</div><div class="kc-lbl">A receber no mês</div></div>
-          <div class="kc"><div class="kc-bar" style="background:#34d399;"></div><div class="kc-top"><div class="kc-ic" style="background:#34d39922;"><i class="ti ti-check" style="color:#34d399;"></i></div></div><div class="kc-val" id="calRecebidoLbl">R$ 0,00</div><div class="kc-lbl">Recebido no mês</div></div>
-          <div class="kc"><div class="kc-bar" style="background:#E84855;"></div><div class="kc-top"><div class="kc-ic" style="background:#E8485522;"><i class="ti ti-trending-down" style="color:#E84855;"></i></div></div><div class="kc-val" id="calCustosLbl">R$ 0,00</div><div class="kc-lbl">Custos do mês</div></div>
+          <div class="kc" title="Total de honorários de pautas em aberto neste mês — ainda não recebidos" style="cursor:help;"><div class="kc-bar" style="background:#F2B705;"></div><div class="kc-top"><div class="kc-ic" style="background:#F2B70522;"><i class="ti ti-coin" style="color:#F2B705;"></i></div></div><div class="kc-val" id="calAReceberLbl">R$ 0,00</div><div class="kc-lbl">A receber no mês</div></div>
+          <div class="kc" title="Total de honorários de pautas marcadas como Pagas neste mês" style="cursor:help;"><div class="kc-bar" style="background:#34d399;"></div><div class="kc-top"><div class="kc-ic" style="background:#34d39922;"><i class="ti ti-check" style="color:#34d399;"></i></div></div><div class="kc-val" id="calRecebidoLbl">R$ 0,00</div><div class="kc-lbl">Recebido no mês</div></div>
+          <div class="kc" title="Total de custos mensais lançados para este mês" style="cursor:help;"><div class="kc-bar" style="background:#E84855;"></div><div class="kc-top"><div class="kc-ic" style="background:#E8485522;"><i class="ti ti-trending-down" style="color:#E84855;"></i></div></div><div class="kc-val" id="calCustosLbl">R$ 0,00</div><div class="kc-lbl">Custos do mês</div></div>
         </div>
         <div class="card" style="margin:0;">
           <div class="ch"><div class="ct" id="calTit">Calendário</div></div>
@@ -777,10 +777,10 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
         <div class="fbar"><span class="fl">Ano</span><select class="fsel" id="rcAno" onchange="pgRc=1;renderRecebiveis()"><option value="0">Todos</option><option selected>2026</option><option>2025</option><option>2024</option><option>2023</option></select><span class="fl">Mês</span><select class="fsel" id="rcMes" onchange="pgRc=1;renderRecebiveis()"><option value="">Todos</option><option value="Jan">Jan</option><option value="Fev">Fev</option><option value="Mar">Mar</option><option value="Abr">Abr</option><option value="Mai">Mai</option><option value="Jun">Jun</option><option value="Jul">Jul</option><option value="Ago">Ago</option><option value="Set">Set</option><option value="Out">Out</option><option value="Nov">Nov</option><option value="Dez">Dez</option></select><div class="fsep"></div></div>
         
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px;">
-          <div class="kc"><div class="kc-bar" style="background:#F2B705;"></div><div class="kc-top"><div class="kc-ic" style="background:#F2B70522;"><i class="ti ti-clock" style="color:#F2B705;"></i></div></div><div class="kc-val" id="rcAbertoLbl">R$ 0,00</div><div class="kc-lbl">Em aberto</div></div>
-          <div class="kc"><div class="kc-bar" style="background:#E84855;"></div><div class="kc-top"><div class="kc-ic" style="background:#E8485522;"><i class="ti ti-alert-triangle" style="color:#E84855;"></i></div></div><div class="kc-val" id="rcAtrasadoLbl">R$ 0,00</div><div class="kc-lbl">Atrasado</div></div>
-          <div class="kc"><div class="kc-bar" style="background:#34d399;"></div><div class="kc-top"><div class="kc-ic" style="background:#34d39922;"><i class="ti ti-check" style="color:#34d399;"></i></div></div><div class="kc-val" id="rcPagoLbl">R$ 0,00</div><div class="kc-lbl">Pago</div></div>
-          <div class="kc"><div class="kc-bar" style="background:#3A99AC;"></div>
+          <div class="kc" title="Honorários de pautas com status financeiro Em aberto — ainda não recebidos" style="cursor:help;"><div class="kc-bar" style="background:#F2B705;"></div><div class="kc-top"><div class="kc-ic" style="background:#F2B70522;"><i class="ti ti-clock" style="color:#F2B705;"></i></div></div><div class="kc-val" id="rcAbertoLbl">R$ 0,00</div><div class="kc-lbl">Em aberto</div></div>
+          <div class="kc" title="Honorários de pautas com vencimento no passado e ainda não pagas" style="cursor:help;"><div class="kc-bar" style="background:#E84855;"></div><div class="kc-top"><div class="kc-ic" style="background:#E8485522;"><i class="ti ti-alert-triangle" style="color:#E84855;"></i></div></div><div class="kc-val" id="rcAtrasadoLbl">R$ 0,00</div><div class="kc-lbl">Atrasado</div></div>
+          <div class="kc" title="Honorários de pautas já pagas no período" style="cursor:help;"><div class="kc-bar" style="background:#34d399;"></div><div class="kc-top"><div class="kc-ic" style="background:#34d39922;"><i class="ti ti-check" style="color:#34d399;"></i></div></div><div class="kc-val" id="rcPagoLbl">R$ 0,00</div><div class="kc-lbl">Pago</div></div>
+          <div class="kc" title="Honorários a vencer nos próximos 30 dias — atenção ao fluxo de caixa" style="cursor:help;"><div class="kc-bar" style="background:#3A99AC;"></div>
           <div class="kc-val" id="rcProx30Lbl">R$ 0</div>
           <div class="kc-lbl">Próx. 30 dias</div></div>
         </div>
@@ -1018,8 +1018,14 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 
 
 
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
+
+
 
 
 
@@ -1496,11 +1502,10 @@ function renderDash(){
   ];
   const kg=$('dashKpis');
   if(kg) kg.innerHTML=cards.map((k,i)=>`
-    <div class="kc" data-tip="${k.tip}" onmouseenter="showTip(this)" onmouseleave="hideTip()" onclick="showTip(this)">
+    <div class="kc" title="${k.tip}">
       <div class="kc-bar" style="background:${k.col};"></div>
       <div class="kc-top">
         <div class="kc-ic" style="background:${k.col}22;"><i class="ti ${k.ic}" style="color:${k.col};font-size:15px;"></i></div>
-        <span class="kc-q">?</span>
       </div>
       <div class="kc-val">${k.v}</div>
       <div class="kc-lbl">${k.lbl}</div>
@@ -1669,10 +1674,10 @@ function renderDem(){
       ? `<span style="font-size:10px;color:#2BB673;cursor:default;" title="Assinado em ${d.pp_pi_signed_at||''}">✍ Assinado</span>`
       : ppStatus === 'enviado'
         ? `<button class="btn btn-sm" style="color:#F2B705;font-size:10px;" onclick="ppModal(${ri})" title="Aguardando assinatura">🔗 Link</button>`
-        : `<button class="btn btn-sm" style="font-size:10px;" onclick="ppModal(${ri})">PP/PI</button>`;
+        : `<button class="btn btn-sm" style="font-size:10px;" title="Gerar link de Proposta/Pedido de Inserção para assinatura" onclick="ppModal(${ri})">PP/PI</button>`;
     const nfBtn = d.nf_num
       ? `<span style="font-size:10px;color:#3A99AC;cursor:default;" title="NF ${d.nf_num}">NF ${d.nf_num}</span>`
-      : `<button class="btn btn-sm" style="font-size:10px;color:var(--t3);" onclick="nfModal(${ri})">NF</button>`;
+      : `<button class="btn btn-sm" style="font-size:10px;color:var(--t3);" title="Registrar número e data da Nota Fiscal" onclick="nfModal(${ri})">NF</button>`;
     return `<tr>
       <td class="tb" title="${esc((d.cli||d.cliente))}">${esc((d.cli||d.cliente))}</td>
       <td title="${esc((d.camp||d.campanha))}" style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc((d.camp||d.campanha))}</td>
@@ -2529,7 +2534,7 @@ function checkSession() {
   setInterval(updateClock,1000);
 
   // Fechar dropdowns
-  document.addEventListener('click',(e)=>{document.querySelectorAll('.st-dd2').forEach(x=>x.remove());if(!e.target.closest('[data-tip]'))hideTip();});
+  document.addEventListener('click',()=>{document.querySelectorAll('.st-dd2').forEach(x=>x.remove());});
 
   // Iniciar na Visão Geral
   doLogin();
@@ -2992,6 +2997,9 @@ function verHistorico(pautaId, cli, camp) {
     <button onclick="document.getElementById('histModal').style.display='none'"
       class="btn btn-sm" style="margin-top:12px;">Fechar</button>`;
 }
+
+
+
 
 
 
