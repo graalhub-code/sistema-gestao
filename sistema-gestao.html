@@ -606,12 +606,6 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
       <div id="sc-novorc" class="screen">
         <div class="attn" style="margin-bottom:10px;"><i class="ti ti-info-circle"></i>Monte o orçamento: cliente, tipo, parceiro/veículo, prazo e custos internos. Resultado financeiro atualizado em tempo real.</div>
       </div>
-      <div <div id="orgChart" style="display:none;"></div>
-<div id="orgSecs" style="display:none;"></div>
-<div id="orgParcRows" style="display:none;"></div>
-<div id="orgResBox" style="display:none;"></div>
-<div id="orcParcelasBox" style="display:none;"></div>
-<div id="parcRestante" style="display:none;"></div>
       <div id="sc-statusorc" class="screen">
         <div class="attn"><i class="ti ti-info-circle"></i>Acompanhe todos os orçamentos por status e empresa. Clique no chip de status para alterá-lo.</div>
       </div>
@@ -746,9 +740,6 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
         <div class="card" style="margin:0;"><div class="ch"><div class="ct">Composição do resultado</div></div><div class="cb" id="socDetalhe"></div></div>
 
         <div style="max-width:480px;margin:16px auto 0;"><canvas id="socChart" height="200"></canvas></div>
-        <div id="soList" style="margin-top:8px;"></div>
-        <div id="soEmp"></div><div id="soEmpChart"></div>
-        <div id="soSt"></div><div id="soStChart"></div>
       </div>
       <div id="sc-calendario" class="screen">
         <div style="display:flex;gap:9px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">
@@ -821,7 +812,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
               <div class="cb">
                 <div class="oline" style="flex-direction:column;align-items:flex-start;gap:7px;padding:10px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--t3);">Meta Faturamento Bruto Anual</span><div style="display:flex;align-items:center;gap:8px;"><input id="cfgMetaBrutoInput" type="number" step="1000" value="1000000" style="width:140px;background:var(--dark3);border:1px solid var(--bdr2);border-radius:7px;color:var(--t1);font-size:11px;padding:6px 9px;outline:none;font-family:inherit;" oninput="document.getElementById('cfgMetaBrutoPreview').textContent=f2(+this.value||0)"><button class="btn btn-sm btn-red" onclick="setMeta('bruto',document.getElementById('cfgMetaBrutoInput').value)"><i class="ti ti-check"></i>Aplicar</button><span id="cfgMetaBrutoPreview" style="font-size:10px;color:var(--t3);">= R$ 1.000.000,00</span></div></div><div class="oline" style="flex-direction:column;align-items:flex-start;gap:7px;padding:10px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--t3);">Meta Lucro Líquido Mensal</span><div style="display:flex;align-items:center;gap:8px;"><input id="cfgMetaMesInput" type="number" step="100" value="83333" style="width:140px;background:var(--dark3);border:1px solid var(--bdr2);border-radius:7px;color:var(--t1);font-size:11px;padding:6px 9px;outline:none;font-family:inherit;" oninput="document.getElementById('cfgMetaMesPreview').textContent=f2(+this.value||0)"><button class="btn btn-sm btn-red" onclick="setMeta('mes',document.getElementById('cfgMetaMesInput').value)"><i class="ti ti-check"></i>Aplicar</button><span id="cfgMetaMesPreview" style="font-size:10px;color:var(--t3);">= R$ 83.333,00</span></div></div>
                 <div class="oline" style="border-bottom:none;"><span>% Reserva de Sócios <small style="color:var(--t3);">(Jul/2026+)</small></span><div style="display:flex;gap:7px;align-items:center;"><input id="cfgSociosPctInput" type="number" step="1" min="0" max="100" value="15" style="width:55px;background:var(--dark3);border:1px solid var(--bdr2);border-radius:7px;color:var(--t1);font-size:11px;padding:6px 9px;outline:none;font-family:inherit;"> %<button class="btn btn-sm btn-red" onclick="setMeta('socios_pct',document.getElementById('cfgSociosPctInput').value)"><i class="ti ti-check"></i>OK</button></div></div>
-                <div class="oline" style="border-bottom:none;"><span>Pró-labore mensal <small style="color:var(--t3);">lançar no mês</small></span><div style="display:flex;gap:7px;align-items:center;"><select class="fsel" id="cfgProLaboreMonthSel" style="width:110px;"><option value="Jan">Janeiro</option><option value="Fev">Fevereiro</option><option value="Mar">Março</option><option value="Abr">Abril</option><option value="Mai">Maio</option><option value="Jun">Junho</option><option value="Jul">Julho</option><option value="Ago">Agosto</option><option value="Set">Setembro</option><option value="Out">Outubro</option><option value="Nov">Novembro</option><option value="Dez">Dezembro</option></select><input id="cfgProLaboreInp" type="number" step="100" min="0" placeholder="R$ 0" style="width:110px;" class="finp" onchange="cfgSave('prolabore',this.value)"/><button class="btn-sm" onclick="cfgSave('prolabore',document.getElementById('cfgProLaboreInp')?.value)">Lançar</button></div></div>
+                <div class="oline" style="border-bottom:none;"><span>Pró-labore mensal <small style="color:var(--t3);">lançar no mês</small></span><div style="display:flex;gap:7px;align-items:center;"><select class="fsel" id="cfgProLaboreMonthSel" style="width:110px;"><option value="Jan">Janeiro</option><option value="Fev">Fevereiro</option><option value="Mar">Março</option><option value="Abr">Abril</option><option value="Mai">Maio</option><option value="Jun">Junho</option><option value="Jul">Julho</option><option value="Ago">Agosto</option><option value="Set">Setembro</option><option value="Out">Outubro</option><option value="Nov">Novembro</option><option value="Dez">Dezembro</option></select><input id="cfgProLaboreInp" type="number" step="100" min="0" placeholder="R$ 0" style="width:110px;" class="finp" onchange="setMeta('prolabore',this.value)"/><button class="btn-sm" onclick="setMeta('prolabore',document.getElementById('cfgProLaboreInp')?.value)">Lançar</button></div></div>
               </div>
             </div>
           </div>
@@ -1286,7 +1277,7 @@ function stMenu(idx,btn,e){
       DATA[idx].st=st;
       addLog('Status',DATA[idx].camp+' — '+old+' → '+st);
       addHistorico(DATA[idx].id,'Status Fin',old,st,USUARIO_ATUAL?.iniciais||'JP');
-      if(API_ONLINE&&DATA[idx].id)apiPut('/pautas/'+DATA[idx].id,{st_fin:st}).catch(()=>{});
+      if(API_ONLINE&&DATA[idx].id)apiPut('/pautas/'+DATA[idx].id,{st:st,st_fin:st}).catch(()=>{});
       dd.remove();
       if(VIEW==='dashboard') renderDash();
       else if(VIEW==='demandas') renderDem();
@@ -1873,7 +1864,7 @@ async function orgVirar(){
   const c=orcCalc(O);
   const job={id:Date.now(),ano:new Date().getFullYear(),mes:MO[new Date().getMonth()],
     empresa:O.empresa,cli:O.cli,vei:'GRAAL.hub',camp:O.nome,tipo:'Fee Mensal',
-    bruto:O.bruto,hon:c.com,liqV:c.liq,imp:O.imp,impV:c.imp,rep:0,liq:c.lucro,
+    bruto:O.bruto,hon:c.com,liqV:c.liq,imp:O.imp,impV:c.imp,rep:0,liq:c.com-c.imp,rent:c.com-c.imp,
     st:'Em aberto',st_fin:'Em aberto',orcId:O.id,_new:true};
   DATA.unshift(job);
   lsSave();
@@ -1988,7 +1979,7 @@ function novaCreate(){
   const id=+sel.value;const o=OR.find(x=>x.id===id);
   if(!o){showToast('Selecione um orçamento aprovado.','err');return;}
   const c=orcCalc(o);
-  DATA.unshift({id:Date.now(),ano:new Date().getFullYear(),mes:MO[new Date().getMonth()],empresa:o.empresa,cli:o.cli,vei:'GRAAL.hub',camp:o.nome,tipo:'Fee Mensal',bruto:o.bruto,hon:c.com,liqV:c.liq,imp:o.imp,impV:c.imp,rep:0,liq:c.lucro,st:'Em aberto',orcId:o.id});
+  DATA.unshift({id:Date.now(),ano:new Date().getFullYear(),mes:MO[new Date().getMonth()],empresa:o.empresa,cli:o.cli,vei:'GRAAL.hub',camp:o.nome,tipo:'Fee Mensal',bruto:o.bruto,hon:c.com,liqV:c.liq,imp:o.imp,impV:c.imp,rep:0,liq:c.com-c.imp,rent:c.com-c.imp,st:'Em aberto',orcId:o.id});
   addLog('Criação','Pauta criada: '+(o.nome||o.cli));
   showToast('Pauta criada com sucesso!','suc');goTo('demandas');
 }
@@ -2023,7 +2014,7 @@ function renderRel(){
   const rk=$('relKpi');if(rk)rk.innerHTML=[
     {l:'R$ Bruto total',v:M(tB),s:data.length+' demandas',n:tB<0},
     {l:'Honorários GRAAL.hub',v:M(tH),s:tB?fpct(tH/tB*100)+' do bruto':'—',n:tH<0},
-    {l:'Lucro Líquido',v:M(tL),s:'Após impostos e repasses',n:tL<0},
+    {l:'Rentabilidade',v:M(tL),s:'Após impostos e repasses',n:tL<0},
   ].map(k=>`<div class="rk"><div class="rk-lbl">${k.l}</div><div class="rk-val ${k.n?'neg':''}">${k.v}</div><div class="rk-sub">${k.s}</div></div>`).join('');
   const relT=$('relTit');if(relT)relT.textContent='Relatório — '+(me||'Todos')+' '+a;
   const pg=($('relPgr')||{textContent:''});
@@ -2117,17 +2108,18 @@ function ncSave(){
   addLog('Custo','Registrado: '+cat);showToast('Custo registrado!','suc');goTo('custos');
 }
 function renderCustos(){
-  const tot=CUSTOS.reduce((s,c)=>s+c.total,0);
+  const cusFilt=CUSTOS.filter(c=>c.ano===F.ano&&(F.per==='ano'||c.mes===F.mes));
+  const tot=cusFilt.reduce((s,c)=>s+c.total,0);
   const el=$('cusTotLbl');if(el)el.textContent=f2(tot);
-  const nl=$('cusNLbl');if(nl)nl.textContent=CUSTOS.length;
-  const tBruto=DATA.filter(d=>d.ano===F.ano).reduce((s,d)=>s+d.bruto,0);
+  const nl=$('cusNLbl');if(nl)nl.textContent=cusFilt.length;
+  const tBruto=DATA.filter(d=>d.ano===F.ano&&(F.per==='ano'||d.mes===F.mes)).reduce((s,d)=>s+d.bruto,0);
   const pl=$('cusPctLbl');if(pl)pl.textContent=tBruto>0?fpct(tot/tBruto*100):'—';
-  const pg=(pgCus-1)*PG;const page=CUSTOS.slice(pg,pg+PG);
+  const pg=(pgCus-1)*PG;const page=cusFilt.slice(pg,pg+PG);
   const rows=$('cusRows');
   if(rows)rows.innerHTML=page.map(c=>`<tr><td style="color:var(--t3);">${c.mes}/${c.ano}</td><td><span class="em">${EMP_SHORT(c.empresa)}</span></td><td>${esc(c.cat||c.categoria||'—')}</td><td title="${esc(c.desc||c.descricao||'—')}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;">${esc(c.desc||c.descricao||'—')}</td><td class="tr">${c.qtd}</td><td class="tr">${f2(c.vUnit||c.val||0)}</td><td class="tr" style="color:var(--orange,#E84855);">${f2(c.total)}</td></tr>`).join('')||
     '<tr><td colspan="7" class="empty"><i class="ti ti-coin-off"></i>Nenhum custo registrado</td></tr>';
-  const pgrEl=$('cusPgr');if(pgrEl)pgrEl.textContent=CUSTOS.length?('Página '+pgCus+' de '+Math.max(1,Math.ceil(CUSTOS.length/PG))):'';
-  const foot=$('cusFoot');if(foot)foot.innerHTML=`<td colspan="6" style="padding:7px 10px;font-weight:700;">Total (${CUSTOS.length})</td><td class="tr" style="padding:7px 10px;font-weight:700;color:var(--orange,#E84855);">${f2(tot)}</td>`;
+  const pgrEl=$('cusPgr');if(pgrEl)pgrEl.textContent=cusFilt.length?('Página '+pgCus+' de '+Math.max(1,Math.ceil(cusFilt.length/PG))):'';
+  const foot=$('cusFoot');if(foot)foot.innerHTML=`<td colspan="6" style="padding:7px 10px;font-weight:700;">Total (${cusFilt.length})</td><td class="tr" style="padding:7px 10px;font-weight:700;color:var(--orange,#E84855);">${f2(tot)}</td>`;
 }
 
 // ── Investimentos ─────────────────────────────────────────────────────
@@ -2261,8 +2253,8 @@ function lsLoad(){
     const raw=localStorage.getItem('graal_hub_v2');if(!raw)return;
     const st=JSON.parse(raw);
     if(Array.isArray(st.OR))OR.splice(0,0,...st.OR);
-    if(Array.isArray(st.CUSTOS))CUSTOS.splice(0,0,...st.CUSTOS);
-    if(Array.isArray(st.INVESTIMENTOS))INVESTIMENTOS.splice(0,0,...st.INVESTIMENTOS);
+    if(Array.isArray(st.CUSTOS))CUSTOS.splice(0,CUSTOS.length,...st.CUSTOS);
+    if(Array.isArray(st.INVESTIMENTOS))INVESTIMENTOS.splice(0,INVESTIMENTOS.length,...st.INVESTIMENTOS);
     if(Array.isArray(st.LOGS))LOGS.splice(0,0,...st.LOGS);
     if(Array.isArray(st.DRAFTS))DRAFTS.splice(0,0,...st.DRAFTS);
     if(Array.isArray(st.DATA_NOVOS))st.DATA_NOVOS.forEach(d=>{if(!DATA.find(x=>x.id===d.id))DATA.push(d);});
@@ -2375,7 +2367,7 @@ async function syncFromAPI() {
       // Mesclar: manter pautas locais _new que ainda não foram ao D1
       const locaisNovas = DATA.filter(d => d._new);
       // Substituir DATA pelo que veio do D1 + locais ainda não sincronizadas
-      DATA.splice(0, DATA.length, ...pautas.result.map(p=>({...p,_new:false})));
+      DATA.splice(0, DATA.length, ...pautas.result.map(p=>({...p, st: p.st_fin||p.st||'Em aberto', cli: p.cli||p.cliente, camp: p.camp||p.campanha, vei: p.vei||p.veiculo, _new:false})));
       locaisNovas.forEach(d => { if(!DATA.find(x=>x.id===d.id)) DATA.unshift(d); });
       showToast('✓ '+DATA.length+' pautas carregadas do D1','suc');
       populaAnos();
@@ -2393,7 +2385,7 @@ async function syncFromAPI() {
     if (logs && logs.result) {
       LOGS.splice(0, 9999, ...logs.result.map(l => ({
         item: l.item, acao: l.acao, tipo: l.tipo,
-        user: l.user||'sistema',
+        user: l.usuario||l.user||'sistema',
         ts: l.created_at ? new Date(l.created_at).getTime() : Date.now()
       })));
     }
@@ -2661,14 +2653,18 @@ function renderSocios(){
     if(window._socChartInst)window._socChartInst.destroy();
     const anos=[2022,2023,2024,2025,2026];
     const jpVals=anos.map(a=>{
-      const h=DATA.filter(d=>d.ano===a).reduce((s,d)=>s+(d.hon||0),0);
-      const c=CUSTOS.filter(d=>d.ano===a).reduce((s,d)=>s+d.total,0);
-      return Math.max(0,(h-c)*0.51);
+      const hh=DATA.filter(d=>d.ano===a).reduce((s,d)=>s+(d.hon||0),0);
+      const iv=DATA.filter(d=>d.ano===a).reduce((s,d)=>s+(d.impV||0),0);
+      const rp=DATA.filter(d=>d.ano===a).reduce((s,d)=>s+(d.rep||0),0);
+      const cc=CUSTOS.filter(d=>d.ano===a).reduce((s,d)=>s+d.total,0);
+      return Math.max(0,(hh-iv-rp-cc)*0.51);
     });
     const myVals=anos.map(a=>{
-      const h=DATA.filter(d=>d.ano===a).reduce((s,d)=>s+(d.hon||0),0);
-      const c=CUSTOS.filter(d=>d.ano===a).reduce((s,d)=>s+d.total,0);
-      return Math.max(0,(h-c)*0.49);
+      const hh=DATA.filter(d=>d.ano===a).reduce((s,d)=>s+(d.hon||0),0);
+      const iv=DATA.filter(d=>d.ano===a).reduce((s,d)=>s+(d.impV||0),0);
+      const rp=DATA.filter(d=>d.ano===a).reduce((s,d)=>s+(d.rep||0),0);
+      const cc=CUSTOS.filter(d=>d.ano===a).reduce((s,d)=>s+d.total,0);
+      return Math.max(0,(hh-iv-rp-cc)*0.49);
     });
     window._socChartInst=new Chart(ctx,{type:'bar',data:{labels:anos,datasets:[
       {label:'João Paulo (51%)',data:jpVals,backgroundColor:'rgba(224,64,48,.7)',borderRadius:4},
