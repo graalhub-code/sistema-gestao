@@ -612,7 +612,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 <div id="orgResBox" style="display:none;"></div>
 <div id="orcParcelasBox" style="display:none;"></div>
 <div id="parcRestante" style="display:none;"></div>
-id="sc-statusorc" class="screen">
+      <div id="sc-statusorc" class="screen">
         <div class="attn"><i class="ti ti-info-circle"></i>Acompanhe todos os orçamentos por status e empresa. Clique no chip de status para alterá-lo.</div>
       </div>
       <div id="sc-nova" class="screen">
@@ -713,11 +713,11 @@ id="sc-statusorc" class="screen">
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:10px;" id="invKpis"></div>
         <div class="card" style="margin:0;">
           <div class="ch"><div class="ct">Investimentos registrados</div><button class="btn btn-red btn-sm" onclick="invOpenModal()"><i class="ti ti-plus"></i>Novo</button></div>
-          <div class="tbl"><div style="max-width:360px;margin:0 auto 14px;"><canvas id="invChart" height="200"></canvas></div>
-        <table>
+          <div class="tbl"><table>
             <thead><tr><th>Trimestre</th><th>Categoria</th><th>Descrição</th><th class="tr">R$ Valor</th><th></th></tr></thead>
             <tbody id="invRows"><tr><td colspan="5" class="empty"><i class="ti ti-chart-bar-off"></i>Nenhum investimento</td></tr></tbody>
-          </table></div>
+          </table>
+        <div style="max-width:380px;margin:14px auto 0;"><canvas id="invChart" height="180"></canvas></div></div>
         </div>
         <div class="modal-ov" id="invModal" onclick="if(event.target===this)invCloseModal()" style="display:none;">
           <div class="modal-box" style="width:420px;">
@@ -737,13 +737,6 @@ id="sc-statusorc" class="screen">
         </div>
       </div>
       <div id="sc-socios" class="screen">
-        <div style="max-width:500px;margin:0 auto 16px;"><canvas id="socChart" height="220"></canvas></div>
-        <div id="soList"></div>
-        <div id="soEmp"></div>
-        <div id="soEmpChart"></div>
-        <div id="soSt"></div>
-        <div id="soStChart"></div>
-
         <div class="attn"><i class="ti ti-info-circle"></i>Distribuição do lucro — João Paulo (51%) · Maysa Feitosa (49%). Lucro = Rentabilidade − Custos Mensais − Investimentos.</div>
         <div style="display:flex;gap:9px;margin-bottom:12px;flex-wrap:wrap;">
           <div class="fld"><label>Ano</label><select class="fsel" id="socAno" onchange="renderSocios()"><option>2026</option><option>2025</option><option>2024</option><option>2023</option></select></div>
@@ -751,6 +744,11 @@ id="sc-statusorc" class="screen">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;" id="socCards"></div>
         <div class="card" style="margin:0;"><div class="ch"><div class="ct">Composição do resultado</div></div><div class="cb" id="socDetalhe"></div></div>
+
+        <div style="max-width:480px;margin:16px auto 0;"><canvas id="socChart" height="200"></canvas></div>
+        <div id="soList" style="margin-top:8px;"></div>
+        <div id="soEmp"></div><div id="soEmpChart"></div>
+        <div id="soSt"></div><div id="soStChart"></div>
       </div>
       <div id="sc-calendario" class="screen">
         <div style="display:flex;gap:9px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">
@@ -1013,8 +1011,14 @@ id="sc-statusorc" class="screen">
 
 
 
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
+
+
 
 
 
@@ -2978,6 +2982,9 @@ function verHistorico(pautaId, cli, camp) {
     <button onclick="document.getElementById('histModal').style.display='none'"
       class="btn btn-sm" style="margin-top:12px;">Fechar</button>`;
 }
+
+
+
 
 
 
