@@ -95,7 +95,7 @@ body{background:var(--dark);font-family:'Inter',system-ui,sans-serif;color:var(-
 .fsep{flex:1;}
 .dash-hero{display:flex;align-items:center;gap:14px;background:var(--dark2);border:1px solid var(--bdr);border-radius:12px;padding:14px 18px;margin-bottom:13px;}
 .kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px;}
-.kc{background:var(--dark2);border:1px solid var(--bdr);border-radius:12px;padding:13px 14px;position:relative;overflow:hidden;}
+.kc-q{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.4);font-size:10px;font-weight:700;cursor:help;line-height:1;margin-left:auto;flex-shrink:0;transition:background .15s,color .15s;}.kc-q:hover{background:rgba(255,255,255,0.2);color:#fff;}.kc{background:var(--dark2);border:1px solid var(--bdr);border-radius:12px;padding:13px 14px;position:relative;overflow:hidden;}
 .kc-bar{position:absolute;top:0;left:0;right:0;height:2px;}
 .kc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
 .kc-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
@@ -1014,8 +1014,12 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 
 
 
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
+
 
 
 
@@ -1487,10 +1491,11 @@ function renderDash(){
   ];
   const kg=$('dashKpis');
   if(kg) kg.innerHTML=cards.map((k,i)=>`
-    <div class="kc" title="${k.tip}">
+    <div class="kc" data-tip="${k.tip}" onmouseenter="showTip(this)" onmouseleave="hideTip()" onclick="showTip(this)">
       <div class="kc-bar" style="background:${k.col};"></div>
       <div class="kc-top">
         <div class="kc-ic" style="background:${k.col}22;"><i class="ti ${k.ic}" style="color:${k.col};font-size:15px;"></i></div>
+        <span class="kc-q">?</span>
       </div>
       <div class="kc-val">${k.v}</div>
       <div class="kc-lbl">${k.lbl}</div>
@@ -2519,7 +2524,7 @@ function checkSession() {
   setInterval(updateClock,1000);
 
   // Fechar dropdowns
-  document.addEventListener('click',()=>document.querySelectorAll('.st-dd2').forEach(x=>x.remove()));
+  document.addEventListener('click',(e)=>{document.querySelectorAll('.st-dd2').forEach(x=>x.remove());if(!e.target.closest('[data-tip]'))hideTip();});
 
   // Iniciar na Visão Geral
   doLogin();
@@ -2539,7 +2544,7 @@ let pgRc=1;
 function chPgRel(d){const data=DATA.filter(x=>{const a=$('rAno')?.value||'2026';const me=$('rMes')?.value||'';const t=$('rTipo')?.value||'';return String(x.ano)===a&&(!me||x.mes===me)&&(!t||x.tipo===t);});const max=Math.max(1,Math.ceil(data.length/PG));pgRel=Math.max(1,Math.min(max,pgRel+d));renderRel();}
 function chPgRc(d){const filt=$("rcFilt")?.value||"";const rcAno=parseInt($("rcAno")?.value||0)||0;const rcMes=$("rcMes")?.value||"";let all=DATA.filter(x=>(!rcAno||x.ano===rcAno)&&(!rcMes||x.mes===rcMes));if(filt)all=all.filter(x=>x.st===filt);const max=Math.max(1,Math.ceil(all.length/PG));pgRc=Math.max(1,Math.min(max,pgRc+d));renderRecebiveis();}
 function orgResLive(fromR){if(!O)return;if(!fromR){const base=O.bruto*(1-(O.imp||0)/100);const ri=document.getElementById("inp_hon_r");if(ri&&base>0)ri.value=(base*(O.com||0)/100).toFixed(2);else if(ri)ri.value="";}const pl=document.getElementById("hon_pct_lbl");if(pl)pl.textContent=fpct(O.com||0);const pi=document.getElementById("inp_hon_pct");if(pi&&fromR)pi.value=+(O.com||0).toFixed(2);const c=orcCalc(O);const ci=document.getElementById("ciTotal");if(ci)ci.textContent=f2(c.ci);orgRes();}
-function showTip(el){hideTip();const msg=el.getAttribute("data-tip");if(!msg)return;const tip=document.createElement("div");tip.id="customTip";tip.style.cssText="position:fixed;z-index:9990;background:var(--dark4,#2e2929);border:1px solid var(--bdr2);border-radius:8px;padding:9px 13px;font-size:11px;color:var(--t1);max-width:260px;line-height:1.55;box-shadow:0 4px 20px rgba(0,0,0,.5);pointer-events:none;";tip.innerHTML=msg;document.body.appendChild(tip);const r=el.getBoundingClientRect();let left=r.left;if(left+270>window.innerWidth)left=window.innerWidth-275;tip.style.left=Math.max(8,left)+"px";tip.style.top=(r.bottom+6)+"px";}
+function showTip(el){hideTip();const msg=el.getAttribute("data-tip");if(!msg)return;const tip=document.createElement("div");tip.id="customTip";tip.style.cssText="position:fixed;z-index:9999;background:#1e1c1c;border:1px solid rgba(255,255,255,0.13);border-radius:10px;padding:10px 14px;font-size:12px;color:#e0dede;max-width:280px;line-height:1.6;box-shadow:0 6px 24px rgba(0,0,0,.65);pointer-events:none;";tip.innerHTML=msg;document.body.appendChild(tip);const r=el.getBoundingClientRect();const tw=tip.offsetWidth||280;const th=tip.offsetHeight||60;let left=r.left+(r.width/2)-(tw/2);left=Math.max(8,Math.min(left,window.innerWidth-tw-8));const spaceBelow=window.innerHeight-r.bottom;const top=spaceBelow>th+16?r.bottom+8:r.top-th-8;tip.style.left=left+"px";tip.style.top=top+"px";}
 function hideTip(){const t=document.getElementById("customTip");if(t)t.remove();}
 function exportData(){const snap={version:"graal_hub_v1",exportedAt:new Date().toISOString(),DATA_NOVOS:DATA.filter(d=>d._new),CUSTOS:[...CUSTOS],INVESTIMENTOS:[...INVESTIMENTOS],OR:[...OR],LOGS:[...LOGS],DRAFTS:[...DRAFTS]};const blob=new Blob([JSON.stringify(snap,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="graal_hub_"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(a.href);showToast("Backup exportado!","suc");addLog("Sistema","Backup exportado");}
 function importData(){const inp=document.createElement("input");inp.type="file";inp.accept=".json";inp.onchange=e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const snap=JSON.parse(ev.target.result);if(snap.version!=="graal_hub_v1")throw new Error("Formato inválido");if(Array.isArray(snap.CUSTOS))CUSTOS.splice(0,9999,...snap.CUSTOS);if(Array.isArray(snap.INVESTIMENTOS))INVESTIMENTOS.splice(0,9999,...snap.INVESTIMENTOS);if(Array.isArray(snap.OR))OR.splice(0,9999,...snap.OR);if(Array.isArray(snap.LOGS))LOGS.splice(0,9999,...snap.LOGS);if(Array.isArray(snap.DRAFTS))DRAFTS.splice(0,9999,...snap.DRAFTS);if(Array.isArray(snap.DATA_NOVOS))snap.DATA_NOVOS.forEach(d=>{if(!DATA.find(x=>x.id===d.id))DATA.push(d);});lsSave();showToast("Dados restaurados!","suc");goTo("dashboard");}catch(err){showToast("Erro: "+err.message,"err");}};reader.readAsText(file);};inp.click();}
@@ -2982,6 +2987,8 @@ function verHistorico(pautaId, cli, camp) {
     <button onclick="document.getElementById('histModal').style.display='none'"
       class="btn btn-sm" style="margin-top:12px;">Fechar</button>`;
 }
+
+
 
 
 
