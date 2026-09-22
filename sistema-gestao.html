@@ -478,7 +478,61 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
       <a style="margin-left:auto;cursor:pointer;font-weight:600;" onclick="goTo('recebiveis')">ver →</a>
     </div>
     <div class="content" id="mainContent">
-      <div id="sc-dashboard" class="screen active">
+      
+<!-- ═══════════════════════════════ TELA DE LOGIN ══════════════════════════════ -->
+<div id="loginScreen" style="display:none;position:fixed;inset:0;background:#0d0d0d;
+  z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:18px;
+    padding:36px 32px;max-width:380px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.6);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;">
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,#E04030,#ff6b5b);
+        border-radius:10px;display:flex;align-items:center;justify-content:center;
+        font-weight:900;font-size:16px;color:#fff;flex-shrink:0;">G</div>
+      <div>
+        <div style="font-size:17px;font-weight:700;color:#fff;">GRAAL.hub</div>
+        <div style="font-size:10px;color:#666;letter-spacing:.3px;">Sistema de Gestão</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:#888;margin-bottom:20px;line-height:1.6;">
+      Acesso restrito. Digite seu usuário e senha para entrar.
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px;">Usuário</label>
+      <select id="loginUser" style="width:100%;background:#111;border:1px solid #333;border-radius:8px;
+        color:#e8e8e8;font-size:13px;padding:10px 12px;outline:none;font-family:inherit;appearance:none;
+        -webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+        background-repeat:no-repeat;background-position:right 12px center;">
+        <option value="">Selecione...</option>
+        <option value="jp">João Paulo Leal</option>
+        <option value="maysa">Maysa Feitosa</option>
+      </select>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px;">Senha</label>
+      <input id="loginPass" type="password" placeholder="••••••••••"
+        onkeydown="if(event.key==='Enter')doLogin()"
+        style="width:100%;background:#111;border:1px solid #333;border-radius:8px;
+          color:#e8e8e8;font-size:13px;padding:10px 12px;outline:none;font-family:inherit;
+          transition:border-color .2s;"
+        onfocus="this.style.borderColor='#E04030'" onblur="this.style.borderColor='#333'">
+    </div>
+    <div id="loginErr" style="display:none;background:rgba(224,64,48,.1);border:1px solid rgba(224,64,48,.3);
+      border-radius:7px;padding:8px 12px;font-size:11px;color:#E04030;margin-bottom:14px;">
+      Usuário ou senha incorretos.
+    </div>
+    <button onclick="doLogin()" style="width:100%;background:linear-gradient(135deg,#E04030,#c0302a);
+      color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;
+      cursor:pointer;font-family:inherit;transition:opacity .2s;"
+      onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+      Entrar
+    </button>
+    <p style="font-size:10px;color:#444;text-align:center;margin-top:14px;">
+      GRAAL.hub · Agência de Publicidade · Salvador/BA
+    </p>
+  </div>
+</div>
+
+<div id="sc-dashboard" class="screen active">
         <div style="display:flex;justify-content:flex-end;margin-bottom:8px;gap:7px;">
           <button class="btn btn-sm" onclick="exportDemCSV()"><i class="ti ti-download"></i>CSV</button>
           <button class="btn btn-sm" onclick="printView('Visão Geral')"><i class="ti ti-file-description"></i>PDF</button>
@@ -675,7 +729,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
           <span style="font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#F2B705;display:inline-block;"></span>A receber</span>
           <span style="font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block;"></span>Recebido</span>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;">
           <div class="kc"><div class="kc-bar" style="background:#F2B705;"></div><div class="kc-top"><div class="kc-ic" style="background:#F2B70522;"><i class="ti ti-coin" style="color:#F2B705;"></i></div></div><div class="kc-val" id="calAReceberLbl">R$ 0,00</div><div class="kc-lbl">A receber no mês</div></div>
           <div class="kc"><div class="kc-bar" style="background:#34d399;"></div><div class="kc-top"><div class="kc-ic" style="background:#34d39922;"><i class="ti ti-check" style="color:#34d399;"></i></div></div><div class="kc-val" id="calRecebidoLbl">R$ 0,00</div><div class="kc-lbl">Recebido no mês</div></div>
           <div class="kc"><div class="kc-bar" style="background:#E84855;"></div><div class="kc-top"><div class="kc-ic" style="background:#E8485522;"><i class="ti ti-trending-down" style="color:#E84855;"></i></div></div><div class="kc-val" id="calCustosLbl">R$ 0,00</div><div class="kc-lbl">Custos do mês</div></div>
@@ -909,12 +963,17 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
   <div id="nfModalContent" style="background:var(--dark2);border-radius:14px;padding:20px;max-width:420px;width:100%;border:1px solid var(--bdr2);"></div>
 </div>
 
-
-
-
+<!-- Modal Histórico de Versões -->
+<div id="histModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
+  z-index:9999;align-items:center;justify-content:center;padding:16px;">
+  <div id="histModalContent" style="background:var(--dark2);border-radius:14px;padding:20px;
+    max-width:480px;width:100%;max-height:80vh;overflow-y:auto;border:1px solid var(--bdr2);">
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
 
 
 
@@ -1446,6 +1505,9 @@ function renderDash(){
       <td class="tr">${M(d.bruto)}</td>
       <td class="tr" style="color:var(--red2);">${M(d.hon)}</td>
       <td>${stWidget(d.st,ri)}</td>
+      <td><button class="btn btn-sm" style="font-size:10px;color:var(--t3);padding:2px 6px;"
+        onclick="verHistorico(${d.id||ri},'${esc((d.cli||d.cliente))}','${esc((d.camp||d.campanha))}')"
+        title="Histórico"><i class="ti ti-history"></i></button></td>
     </tr>`;
   }).join('')||'<tr><td colspan="8" class="empty">Sem dados</td></tr>';
 }
@@ -2007,24 +2069,53 @@ function invSave(){
 // ── Calendário ────────────────────────────────────────────────────────
 
 function renderRecebiveis(){
-  const filt=$('rcFilt')?.value||'';
+  const filt=($('rcFilt')?.value||'');
   const rcAno=parseInt($('rcAno')?.value||0)||0;
-  const rcMes=$('rcMes')?.value||'';
+  const rcMes=($('rcMes')?.value||'');
+  const MO_IDX={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const em30=new Date(hoje); em30.setDate(hoje.getDate()+30);
+
+  // Calcular data aproximada de vencimento (último dia do mês da pauta)
+  function vencData(d){
+    const mi=MO_IDX[d.mes]??0; const ano=d.ano||hoje.getFullYear();
+    return new Date(ano, mi+1, 0); // último dia do mês
+  }
+
   let all=DATA.filter(d=>(!rcAno||d.ano===rcAno)&&(!rcMes||d.mes===rcMes));
   if(filt)all=all.filter(d=>d.st===filt);
-  const aberto =DATA.filter(d=>d.st==='Em aberto').reduce((s,d)=>s+(d.hon||0),0);
-  const atrasado=DATA.filter(d=>d.st==='Atrasado').reduce((s,d)=>s+(d.hon||0),0);
-  const pago   =DATA.filter(d=>d.st==='Pago').reduce((s,d)=>s+(d.hon||0),0);
-  const la=$('rcAbertoLbl');if(la)la.textContent=f2(aberto);
-  const lt=$('rcAtrasadoLbl');if(lt)lt.textContent=f2(atrasado);
-  const lp=$('rcPagoLbl');if(lp)lp.textContent=f2(pago);
-  const pg=(pgRc-1)*PG;const page=all.slice(pg,pg+PG);
+
+  // KPIs globais
+  const aberto  =DATA.filter(d=>d.st==='Em aberto').reduce((s,d)=>s+(d.hon||0),0);
+  const atrasado=DATA.filter(d=>{
+    if(d.st!=='Em aberto') return false;
+    return vencData(d)<hoje;
+  }).reduce((s,d)=>s+(d.hon||0),0);
+  const pago    =DATA.filter(d=>d.st==='Pago').reduce((s,d)=>s+(d.hon||0),0);
+  const prox30  =DATA.filter(d=>d.st==='Em aberto'&&vencData(d)>=hoje&&vencData(d)<=em30).reduce((s,d)=>s+(d.hon||0),0);
+
+  const la=$('rcAbertoLbl');    if(la) la.textContent=f2(aberto);
+  const lt=$('rcAtrasadoLbl'); if(lt) lt.textContent=f2(atrasado);
+  const lp=$('rcPagoLbl');     if(lp) lp.textContent=f2(pago);
+  const lx=$('rcProx30Lbl');   if(lx) lx.textContent=f2(prox30);
+
+  // Ordenar por vencimento
+  all.sort((a,b)=>vencData(a)-vencData(b));
+  const pg=(pgRc-1)*PG; const page=all.slice(pg,pg+PG);
   let tB=0,tH=0;
   const rb=$('rcRows');
   if(rb)rb.innerHTML=page.map(d=>{
-    const ri=DATA.indexOf(d);tB+=d.bruto;tH+=d.hon||0;
+    const ri=DATA.indexOf(d); tB+=d.bruto; tH+=d.hon||0;
+    const venc=vencData(d);
+    const diasP=Math.ceil((venc-hoje)/86400000);
+    let vencLabel,vencColor;
+    if(d.st==='Pago'){ vencLabel='Pago'; vencColor='#2BB673'; }
+    else if(diasP<0){ vencLabel=`Atrasado ${Math.abs(diasP)}d`; vencColor='#E04030'; }
+    else if(diasP<=7){ vencLabel=`Vence em ${diasP}d`; vencColor='#F2B705'; }
+    else if(diasP<=30){ vencLabel=`${diasP} dias`; vencColor='#3A99AC'; }
+    else { vencLabel=`${d.mes}/${d.ano}`; vencColor='var(--t3)'; }
     return `<tr>
-      <td style="color:var(--t3);">${d.mes}/${d.ano}</td>
+      <td style="color:${vencColor};font-size:11px;font-weight:600;white-space:nowrap;">${vencLabel}</td>
       <td class="tb" title="${esc((d.cli||d.cliente))}">${esc((d.cli||d.cliente))}</td>
       <td title="${esc((d.camp||d.campanha))}" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc((d.camp||d.campanha))}</td>
       <td><span class="badge" style="background:${TC[d.tipo]||'#888'}22;color:${TC[d.tipo]||'#888'};">${esc(d.tipo)}</span></td>
@@ -2032,9 +2123,11 @@ function renderRecebiveis(){
       <td class="tr" style="color:var(--red2);">${M(d.hon||0)}</td>
       <td>${stWidget(d.st,ri)}</td>
     </tr>`;
-  }).join('')||'<tr><td colspan="7" class="empty">Nenhum registro</td></tr>';
-  const rf=$('rcFoot');if(rf)rf.innerHTML=`<td colspan="4" style="padding:7px 10px;font-weight:700;">Total (${all.length})</td><td class="tr" style="padding:7px 10px;font-weight:700;">${M(tB)}</td><td class="tr" style="padding:7px 10px;font-weight:700;color:var(--red2);">${M(tH)}</td><td></td>`;
-  const pgrEl=$('rcPgr');if(pgrEl)pgrEl.textContent=all.length?('Página '+pgRc+' de '+Math.max(1,Math.ceil(all.length/PG))):'';
+  }).join('')||'<tr><td colspan="7" class="empty"><i class="ti ti-check"></i>Nenhum registro</td></tr>';
+  const rf=$('rcFoot');
+  if(rf)rf.innerHTML=`<td colspan="4" style="padding:7px 10px;font-weight:700;">Total (${all.length})</td><td class="tr" style="padding:7px 10px;font-weight:700;">${M(tB)}</td><td class="tr" style="padding:7px 10px;font-weight:700;color:var(--red2);">${M(tH)}</td><td></td>`;
+  const pgrEl=$('rcPgr');
+  if(pgrEl)pgrEl.textContent=all.length?('Página '+pgRc+' de '+Math.max(1,Math.ceil(all.length/PG))):'';
 }
 
 // ── Log ───────────────────────────────────────────────────────────────
@@ -2242,6 +2335,11 @@ async function lsSaveAPI(pauta) {
 }
 
 (function(){
+  // Verificar sessão antes de qualquer coisa
+  const _ls = document.getElementById('loginScreen');
+  const _layout = document.querySelector('.layout');
+  if (_ls) _ls.style.display = 'none'; // ocultar até checar sessão
+  if (_layout) _layout.style.display = 'none';
   // Tema salvo
   let theme='dark';try{theme=localStorage.getItem('gh_theme')||'dark';}catch(e){}
   document.documentElement.setAttribute('data-theme',theme);
@@ -2267,6 +2365,10 @@ async function lsSaveAPI(pauta) {
     });
   }
   // Log inicial
+  // Auth: checar sessão salva
+  if (!checkSession()) {
+    mostrarLogin();
+  }
   populaAnos();
   addLog('Sistema','Sistema iniciado — '+DATA.length+' pautas carregadas');
 
@@ -2678,6 +2780,145 @@ async function syncPlanilha() {
   showToast('✓ Sync concluído — D1: '+DATA.length+' pautas','suc');
 }
 
+// ══════════════════════════════════════════════════════════════
+// AUTENTICAÇÃO — Sessão real por usuário
+// JP:    graal@jp2026   token: jp2026   nome: João Paulo
+// Maysa: graal@may2026  token: maysa2026 nome: Maysa Feitosa
+// ══════════════════════════════════════════════════════════════
+const AUTH_USERS = {
+  jp:    { senha: 'graal@jp2026',   token: 'jp2026',    nome: 'João Paulo Leal',  iniciais: 'JP' },
+  maysa: { senha: 'graal@may2026',  token: 'maysa2026', nome: 'Maysa Feitosa',    iniciais: 'MF' }
+};
+let USUARIO_ATUAL = null;
+
+function mostrarLogin() {
+  const ls = document.getElementById('loginScreen');
+  const layout = document.querySelector('.layout');
+  if (ls) ls.style.display = 'flex';
+  if (layout) layout.style.display = 'none';
+}
+
+function mostrarSistema(usuario) {
+  USUARIO_ATUAL = usuario;
+  const ls = document.getElementById('loginScreen');
+  const layout = document.querySelector('.layout');
+  if (ls) ls.style.display = 'none';
+  if (layout) layout.style.display = '';
+  // Atualizar nome do usuário na UI
+  const nm = document.getElementById('userName');
+  if (nm) nm.textContent = usuario.iniciais;
+  const nmFull = document.getElementById('userNameFull');
+  if (nmFull) nmFull.textContent = usuario.nome;
+  // Definir API token automaticamente
+  API_TOKEN = usuario.token;
+  localStorage.setItem('graal_api_token', API_TOKEN);
+  // Conectar API
+  checkAPI().then(online => { if (online) syncFromAPI(); });
+}
+
+function doLogin() {
+  const user = document.getElementById('loginUser')?.value;
+  const pass = document.getElementById('loginPass')?.value;
+  const err  = document.getElementById('loginErr');
+  if (!user) { if (err) { err.style.display='block'; err.textContent='Selecione um usuário.'; } return; }
+  const u = AUTH_USERS[user];
+  if (!u || pass !== u.senha) {
+    if (err) { err.style.display='block'; err.textContent='Usuário ou senha incorretos.'; }
+    if (document.getElementById('loginPass')) document.getElementById('loginPass').value = '';
+    return;
+  }
+  if (err) err.style.display = 'none';
+  // Salvar sessão
+  try { sessionStorage.setItem('graal_session', JSON.stringify({ user, ts: Date.now() })); } catch(e){}
+  mostrarSistema(u);
+  addLog('Acesso', u.nome+' entrou no sistema', 'auth');
+}
+
+function doLogout() {
+  try { sessionStorage.removeItem('graal_session'); } catch(e){}
+  USUARIO_ATUAL = null;
+  API_TOKEN = ''; API_ONLINE = false;
+  localStorage.removeItem('graal_api_token');
+  const el = document.getElementById('loginPass');
+  if (el) el.value = '';
+  const sel = document.getElementById('loginUser');
+  if (sel) sel.value = '';
+  const ls = document.getElementById('loginScreen');
+  const layout = document.querySelector('.layout');
+  if (ls) ls.style.display = 'flex';
+  if (layout) layout.style.display = 'none';
+}
+
+function checkSession() {
+  try {
+    const raw = sessionStorage.getItem('graal_session');
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    // Sessão expira em 12h
+    if (Date.now() - s.ts > 12 * 3600 * 1000) { sessionStorage.removeItem('graal_session'); return false; }
+    const u = AUTH_USERS[s.user];
+    if (!u) return false;
+    mostrarSistema(u);
+    return true;
+  } catch(e) { return false; }
+}
+
+// ══════════════════════════════════════════════════════════════
+// HISTÓRICO DE VERSÕES — log de alterações por pauta
+// ══════════════════════════════════════════════════════════════
+function addHistorico(pautaId, campo, valorAntes, valorDepois, usuario) {
+  if (!pautaId) return;
+  const key = 'graal_hist_' + pautaId;
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
+  hist.unshift({
+    ts: new Date().toISOString(),
+    usuario: usuario || (USUARIO_ATUAL?.iniciais || '??'),
+    campo, antes: valorAntes, depois: valorDepois
+  });
+  // Manter últimas 50 alterações por pauta
+  if (hist.length > 50) hist = hist.slice(0, 50);
+  try { localStorage.setItem(key, JSON.stringify(hist)); } catch(e) {}
+}
+
+function verHistorico(pautaId, cli, camp) {
+  const key = 'graal_hist_' + pautaId;
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
+  const el = document.getElementById('histModal');
+  if (!el) return;
+  el.style.display = 'flex';
+  const ct = document.getElementById('histModalContent');
+  if (!ct) return;
+  ct.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <div style="font-weight:700;font-size:13px;">${esc(cli||'Pauta')}</div>
+        <div style="font-size:11px;color:var(--t3);">${esc(camp||'')} · Histórico de alterações</div>
+      </div>
+      <button onclick="document.getElementById('histModal').style.display='none'"
+        style="background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;">✕</button>
+    </div>
+    ${hist.length === 0
+      ? '<div style="text-align:center;color:var(--t3);padding:20px;font-size:12px;"><i class="ti ti-history"></i><br>Nenhuma alteração registrada ainda.</div>'
+      : hist.map(h => {
+          const dt = new Date(h.ts).toLocaleString('pt-BR');
+          return `<div style="padding:10px 0;border-bottom:1px solid var(--bdr2);">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+              <span style="font-size:11px;font-weight:600;color:var(--t1);">${esc(h.campo)}</span>
+              <span style="font-size:10px;color:var(--t3);">${dt} · ${esc(h.usuario)}</span>
+            </div>
+            <div style="font-size:11px;color:var(--t3);">
+              <span style="color:#E04030;text-decoration:line-through;">${esc(String(h.antes||'—'))}</span>
+              &nbsp;→&nbsp;
+              <span style="color:#2BB673;">${esc(String(h.depois||'—'))}</span>
+            </div>
+          </div>`;
+        }).join('')
+    }
+    <button onclick="document.getElementById('histModal').style.display='none'"
+      class="btn btn-sm" style="margin-top:12px;">Fechar</button>`;
+}
 
 </script>
 </body>
