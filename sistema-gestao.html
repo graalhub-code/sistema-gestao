@@ -768,21 +768,20 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
           <div class="ch"><div class="ct" id="calTit">Calendário</div></div>
           <div class="cb">
             <div class="cal-hdr"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
-            <div class="cal-grid" <div style="font-size:11px;color:var(--t3);margin-bottom:8px;padding:0 2px;">Estimativa do mês: <strong id="calSaldoLbl" style="color:var(--green);">R$ 0</strong></div>
-        id="calGrid"></div>
+            <div>
+          <div style="font-size:11px;color:var(--t3);margin-bottom:8px;padding:0 2px;">Estimativa do mês: <strong id="calSaldoLbl" style="color:var(--green);">R$ 0</strong></div>
+          <div id="calGrid"></div>
           </div>
         </div>
       </div>
       <div id="sc-recebiveis" class="screen">
         <div class="fbar"><span class="fl">Ano</span><select class="fsel" id="rcAno" onchange="pgRc=1;renderRecebiveis()"><option value="0">Todos</option><option selected>2026</option><option>2025</option><option>2024</option><option>2023</option></select><span class="fl">Mês</span><select class="fsel" id="rcMes" onchange="pgRc=1;renderRecebiveis()"><option value="">Todos</option><option value="Jan">Jan</option><option value="Fev">Fev</option><option value="Mar">Mar</option><option value="Abr">Abr</option><option value="Mai">Mai</option><option value="Jun">Jun</option><option value="Jul">Jul</option><option value="Ago">Ago</option><option value="Set">Set</option><option value="Out">Out</option><option value="Nov">Nov</option><option value="Dez">Dez</option></select><div class="fsep"></div></div>
         
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;">
           <div class="kc" title="Honorários de pautas com status financeiro Em aberto — ainda não recebidos" style="cursor:help;"><div class="kc-bar" style="background:#F2B705;"></div><div class="kc-top"><div class="kc-ic" style="background:#F2B70522;"><i class="ti ti-clock" style="color:#F2B705;"></i></div></div><div class="kc-val" id="rcAbertoLbl">R$ 0,00</div><div class="kc-lbl">Em aberto</div></div>
           <div class="kc" title="Honorários de pautas com vencimento no passado e ainda não pagas" style="cursor:help;"><div class="kc-bar" style="background:#E84855;"></div><div class="kc-top"><div class="kc-ic" style="background:#E8485522;"><i class="ti ti-alert-triangle" style="color:#E84855;"></i></div></div><div class="kc-val" id="rcAtrasadoLbl">R$ 0,00</div><div class="kc-lbl">Atrasado</div></div>
           <div class="kc" title="Honorários de pautas já pagas no período" style="cursor:help;"><div class="kc-bar" style="background:#34d399;"></div><div class="kc-top"><div class="kc-ic" style="background:#34d39922;"><i class="ti ti-check" style="color:#34d399;"></i></div></div><div class="kc-val" id="rcPagoLbl">R$ 0,00</div><div class="kc-lbl">Pago</div></div>
-          <div class="kc" title="Honorários a vencer nos próximos 30 dias — atenção ao fluxo de caixa" style="cursor:help;"><div class="kc-bar" style="background:#3A99AC;"></div>
-          <div class="kc-val" id="rcProx30Lbl">R$ 0</div>
-          <div class="kc-lbl">Próx. 30 dias</div></div>
+          <div class="kc" title="Honorários a vencer nos próximos 30 dias — atenção ao fluxo de caixa" style="cursor:help;"><div class="kc-bar" style="background:#3A99AC;"></div><div class="kc-top"><div class="kc-ic" style="background:#3A99AC22;"><i class="ti ti-calendar-due" style="color:#3A99AC;font-size:15px;"></i></div></div><div class="kc-val" id="rcProx30Lbl">R$ 0,00</div><div class="kc-lbl">Próx. 30 dias</div></div>
         </div>
         <div class="card" style="margin:0;">
           <div class="ch"><div class="ct">Honorários por status</div>
@@ -1021,8 +1020,14 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 
 
 
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
+
+
 
 
 
@@ -2051,8 +2056,9 @@ function renderCli(){
   const me=$('cMes')?.value||'';
   const cli=$('cCli')?.value||'';
   const map={};DATA.filter(d=>String(d.ano)===a&&(!me||d.mes===me)).forEach(d=>{
-    if(!map[d.cli])map[d.cli]={b:0,h:0,c:0};
-    map[d.cli].b+=d.bruto;map[d.cli].h+=(d.hon||0);map[d.cli].c++;
+    const ck=(d.cli||d.cliente||'(sem cliente)');
+    if(!map[ck])map[ck]={b:0,h:0,c:0};
+    map[ck].b+=d.bruto;map[ck].h+=(d.hon||0);map[ck].c++;
   });
   const sorted=Object.entries(map).sort((a,b)=>b[1].b-a[1].b);
   const tB=sorted.reduce((s,e)=>s+e[1].b,0);
@@ -2118,7 +2124,7 @@ function renderCustos(){
   const pl=$('cusPctLbl');if(pl)pl.textContent=tBruto>0?fpct(tot/tBruto*100):'—';
   const pg=(pgCus-1)*PG;const page=CUSTOS.slice(pg,pg+PG);
   const rows=$('cusRows');
-  if(rows)rows.innerHTML=page.map(c=>`<tr><td style="color:var(--t3);">${c.mes}/${c.ano}</td><td><span class="em">${EMP_SHORT(c.empresa)}</span></td><td>${esc(c.categoria)}</td><td title="${esc(c.descricao)}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;">${esc(c.descricao)}</td><td class="tr">${c.qtd}</td><td class="tr">${f2(c.vUnit)}</td><td class="tr" style="color:var(--orange,#E84855);">${f2(c.total)}</td></tr>`).join('')||
+  if(rows)rows.innerHTML=page.map(c=>`<tr><td style="color:var(--t3);">${c.mes}/${c.ano}</td><td><span class="em">${EMP_SHORT(c.empresa)}</span></td><td>${esc(c.cat||c.categoria||'—')}</td><td title="${esc(c.desc||c.descricao||'—')}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;">${esc(c.desc||c.descricao||'—')}</td><td class="tr">${c.qtd}</td><td class="tr">${f2(c.vUnit||c.val||0)}</td><td class="tr" style="color:var(--orange,#E84855);">${f2(c.total)}</td></tr>`).join('')||
     '<tr><td colspan="7" class="empty"><i class="ti ti-coin-off"></i>Nenhum custo registrado</td></tr>';
   const pgrEl=$('cusPgr');if(pgrEl)pgrEl.textContent=CUSTOS.length?('Página '+pgCus+' de '+Math.max(1,Math.ceil(CUSTOS.length/PG))):'';
   const foot=$('cusFoot');if(foot)foot.innerHTML=`<td colspan="6" style="padding:7px 10px;font-weight:700;">Total (${CUSTOS.length})</td><td class="tr" style="padding:7px 10px;font-weight:700;color:var(--orange,#E84855);">${f2(tot)}</td>`;
@@ -2204,7 +2210,10 @@ function renderRecebiveis(){
 
 // ── Log ───────────────────────────────────────────────────────────────
 function fmtLogTime(ts){
-  const d=new Date(ts+tzOffset*3600*1000);const pad=n=>String(n).padStart(2,'0');
+  if(!ts)return '—';
+  const ms=typeof ts==='string'?new Date(ts).getTime():Number(ts);
+  if(isNaN(ms))return '—';
+  const d=new Date(ms+tzOffset*3600*1000);const pad=n=>String(n).padStart(2,'0');
   return pad(d.getUTCDate())+'/'+pad(d.getUTCMonth()+1)+'/'+d.getUTCFullYear()+' '+pad(d.getUTCHours())+':'+pad(d.getUTCMinutes());
 }
 function renderLog(){
@@ -2383,7 +2392,9 @@ async function syncFromAPI() {
     const logs = await apiGet('/logs');
     if (logs && logs.result) {
       LOGS.splice(0, 9999, ...logs.result.map(l => ({
-        item: l.item, acao: l.acao, tipo: l.tipo, ts: l.created_at
+        item: l.item, acao: l.acao, tipo: l.tipo,
+        user: l.user||'sistema',
+        ts: l.created_at ? new Date(l.created_at).getTime() : Date.now()
       })));
     }
     lsSave();
@@ -2997,6 +3008,9 @@ function verHistorico(pautaId, cli, camp) {
     <button onclick="document.getElementById('histModal').style.display='none'"
       class="btn btn-sm" style="margin-top:12px;">Fechar</button>`;
 }
+
+
+
 
 
 
