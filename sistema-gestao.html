@@ -822,6 +822,7 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
               <div class="cb">
                 <div class="oline" style="flex-direction:column;align-items:flex-start;gap:7px;padding:10px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--t3);">Meta Faturamento Bruto Anual</span><div style="display:flex;align-items:center;gap:8px;"><input id="cfgMetaBrutoInput" type="number" step="1000" value="1000000" style="width:140px;background:var(--dark3);border:1px solid var(--bdr2);border-radius:7px;color:var(--t1);font-size:11px;padding:6px 9px;outline:none;font-family:inherit;" oninput="document.getElementById('cfgMetaBrutoPreview').textContent=f2(+this.value||0)"><button class="btn btn-sm btn-red" onclick="setMeta('bruto',document.getElementById('cfgMetaBrutoInput').value)"><i class="ti ti-check"></i>Aplicar</button><span id="cfgMetaBrutoPreview" style="font-size:10px;color:var(--t3);">= R$ 1.000.000,00</span></div></div><div class="oline" style="flex-direction:column;align-items:flex-start;gap:7px;padding:10px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--t3);">Meta Lucro Líquido Mensal</span><div style="display:flex;align-items:center;gap:8px;"><input id="cfgMetaMesInput" type="number" step="100" value="83333" style="width:140px;background:var(--dark3);border:1px solid var(--bdr2);border-radius:7px;color:var(--t1);font-size:11px;padding:6px 9px;outline:none;font-family:inherit;" oninput="document.getElementById('cfgMetaMesPreview').textContent=f2(+this.value||0)"><button class="btn btn-sm btn-red" onclick="setMeta('mes',document.getElementById('cfgMetaMesInput').value)"><i class="ti ti-check"></i>Aplicar</button><span id="cfgMetaMesPreview" style="font-size:10px;color:var(--t3);">= R$ 83.333,00</span></div></div>
                 <div class="oline" style="border-bottom:none;"><span>% Reserva de Sócios <small style="color:var(--t3);">(Jul/2026+)</small></span><div style="display:flex;gap:7px;align-items:center;"><input id="cfgSociosPctInput" type="number" step="1" min="0" max="100" value="15" style="width:55px;background:var(--dark3);border:1px solid var(--bdr2);border-radius:7px;color:var(--t1);font-size:11px;padding:6px 9px;outline:none;font-family:inherit;"> %<button class="btn btn-sm btn-red" onclick="setMeta('socios_pct',document.getElementById('cfgSociosPctInput').value)"><i class="ti ti-check"></i>OK</button></div></div>
+                <div class="oline" style="border-bottom:none;"><span>Pró-labore mensal <small style="color:var(--t3);">lançar no mês</small></span><div style="display:flex;gap:7px;align-items:center;"><select class="fsel" id="cfgProLaboreMonthSel" style="width:110px;"><option value="Jan">Janeiro</option><option value="Fev">Fevereiro</option><option value="Mar">Março</option><option value="Abr">Abril</option><option value="Mai">Maio</option><option value="Jun">Junho</option><option value="Jul">Julho</option><option value="Ago">Agosto</option><option value="Set">Setembro</option><option value="Out">Outubro</option><option value="Nov">Novembro</option><option value="Dez">Dezembro</option></select><input id="cfgProLaboreInp" type="number" step="100" min="0" placeholder="R$ 0" style="width:110px;" class="finp" onchange="cfgSave('prolabore',this.value)"/><button class="btn-sm" onclick="cfgSave('prolabore',document.getElementById('cfgProLaboreInp')?.value)">Lançar</button></div></div>
               </div>
             </div>
           </div>
@@ -1016,8 +1017,10 @@ code{background:var(--dark4,#2e2b2b);padding:2px 6px;border-radius:4px;font-fami
 
 
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+
 
 
 
@@ -1271,6 +1274,8 @@ function stMenu(idx,btn,e){
       const old=DATA[idx].st;
       DATA[idx].st=st;
       addLog('Status',DATA[idx].camp+' — '+old+' → '+st);
+      addHistorico(DATA[idx].id,'Status Fin',old,st,USUARIO_ATUAL?.iniciais||'JP');
+      if(API_ONLINE&&DATA[idx].id)apiPut('/pautas/'+DATA[idx].id,{st_fin:st}).catch(()=>{});
       dd.remove();
       if(VIEW==='dashboard') renderDash();
       else if(VIEW==='demandas') renderDem();
@@ -2987,6 +2992,7 @@ function verHistorico(pautaId, cli, camp) {
     <button onclick="document.getElementById('histModal').style.display='none'"
       class="btn btn-sm" style="margin-top:12px;">Fechar</button>`;
 }
+
 
 
 
