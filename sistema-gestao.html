@@ -2361,15 +2361,44 @@ async function syncFromAPI() {
   if (!API_TOKEN) return;
   showToast('Sincronizando com a nuvem...', 'info');
   try {
-    // 1. Pautas — D1 é a fonte verdade quando online
+    // 1. Pautas — estratégia híbrida: hardcoded é base histórica (tem rep correto),
+    //    D1 fornece status atualizados + pautas genuinamente novas (id > 1008)
     const pautas = await apiGet('/pautas/all');
     if (pautas && pautas.result && pautas.result.length > 0) {
-      // Mesclar: manter pautas locais _new que ainda não foram ao D1
+      // Mapa de status do D1 por (ano+mes+cliente+bruto) para atualizar status nos hardcoded
+      const d1Map = new Map();
+      pautas.result.forEach(p => {
+        // chave por id quando disponível, senão por combinação de campos
+        d1Map.set(p.id, p);
+      });
+      // Pautas locais _new ainda não enviadas ao D1
       const locaisNovas = DATA.filter(d => d._new);
-      // Substituir DATA pelo que veio do D1 + locais ainda não sincronizadas
-      DATA.splice(0, DATA.length, ...pautas.result.map(p=>({...p, st: p.st_fin||p.st||'Em aberto', cli: p.cli||p.cliente, camp: p.camp||p.campanha, vei: p.vei||p.veiculo, _new:false})));
+      // Preservar hardcoded + atualizar st/st_fin do D1 neles
+      DATA.forEach(d => {
+        const d1p = d1Map.get(d.id);
+        if (d1p) {
+          // Atualizar apenas campos operacionais: status, NF, PP/PI, obs
+          d.st = d1p.st_fin || d1p.st || d.st || 'Em aberto';
+          d.st_fin = d1p.st_fin || d.st_fin;
+          if (d1p.pp_pi_status && d1p.pp_pi_status !== 'rascunho') d.pp_pi_status = d1p.pp_pi_status;
+          if (d1p.pp_pi_link) d.pp_pi_link = d1p.pp_pi_link;
+          if (d1p.pp_pi_signed_name) d.pp_pi_signed_name = d1p.pp_pi_signed_name;
+          if (d1p.pp_pi_signed_at)   d.pp_pi_signed_at   = d1p.pp_pi_signed_at;
+          if (d1p.nf_num)  d.nf_num  = d1p.nf_num;
+          if (d1p.nf_data) d.nf_data = d1p.nf_data;
+          if (d1p.obs)     d.obs     = d1p.obs;
+        }
+      });
+      // Adicionar pautas genuinamente novas do D1 (criadas pelo usuário, id > 1008)
+      const hardcodedIds = new Set(DATA.map(d => d.id));
+      pautas.result.forEach(p => {
+        if (!hardcodedIds.has(p.id)) {
+          DATA.unshift({...p, st: p.st_fin||p.st||'Em aberto', cli: p.cli||p.cliente, camp: p.camp||p.campanha, vei: p.vei||p.veiculo, _new: false});
+        }
+      });
+      // Adicionar locais _new ainda não sincronizadas
       locaisNovas.forEach(d => { if(!DATA.find(x=>x.id===d.id)) DATA.unshift(d); });
-      showToast('✓ '+DATA.length+' pautas carregadas do D1','suc');
+      showToast('✓ '+DATA.length+' pautas sincronizadas','suc');
       populaAnos();
     }
     // 2. Custos
